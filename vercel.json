@@ -1,0 +1,20 @@
+{
+  "build": {
+    "env": {
+      "CI": "false"
+    }
+  },
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.thegreenturtles.in"
+        }
+      ],
+      "destination": "https://thegreenturtles.in/$1",
+      "permanent": true
+    }
+  ]
+}
