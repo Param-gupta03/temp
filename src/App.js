@@ -1,73 +1,71 @@
 import React, { useContext } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+
 import { AppContext } from './context/AppContext';
-
-import Header from './components/Header';
 import Footer from './components/Footer';
-
-import ComingSoonPage from './pages/ComingSoonPage';
-import HomePage from './pages/HomePage';
-import ProductListPage from './pages/ProductListPage';
-import CartPage from './pages/CartPage';
+import Header from './components/Header';
 import AboutPage from './pages/AboutPage';
+import CartPage from './pages/CartPage';
+import ComingSoonPage from './pages/ComingSoonPage';
 import ContactPage from './pages/ContactPage';
+import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import SubscriptionPage from './pages/SubscriptionPage';
 import PartnerPage from './pages/PartnerPage';
+import ProductDetail from './pages/ProductDetail';
+import ProductListPage from './pages/ProductListPage';
 import ProfilePage from './pages/ProfilePage';
+import RegisterPage from './pages/RegisterPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import SellerDashboard from './pages/SellerDashboard';
+import SubscriptionPage from './pages/SubscriptionPage';
 
 const App = () => {
-  const { showMessageModal, message, setShowMessageModal } = useContext(AppContext);
-
-  // ✅ Hook inside component
+  const { showMessageModal, message, setShowMessageModal, role } =
+    useContext(AppContext);
   const location = useLocation();
   const isComingSoon = location.pathname === '/';
-  const { role } = useContext(AppContext);
+  const isAdmin = role === 'admin';
+  const canAccessDashboard = role === 'seller' || role === 'admin';
+  const adminOnlyRoute = (element) => (isAdmin ? <Navigate to="/seller-dashboard" replace /> : element);
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      
-
-      {/* Hide header on Coming Soon */}
       {!isComingSoon && <Header />}
 
       <main className="flex-grow container mx-auto px-4 py-8">
-        
         <Routes>
-  {/* Seller Protected Route */}
-  <Route
-    path="/seller-dashboard"
-    element={
-      role === 'seller' ? (
-        <SellerDashboard />
-      ) : (
-        <HomePage />
-      )
-    }
-  />
-
-  {/* First page */}
-  <Route path="/" element={<ComingSoonPage />} />
-
-  <Route path="/home" element={<HomePage />} />
-  <Route path="/products" element={<ProductListPage />} />
-  <Route path="/cart" element={<CartPage />} />
-  <Route path="/about" element={<AboutPage />} />
-  <Route path="/contact" element={<ContactPage />} />
-  <Route path="/login" element={<LoginPage />} />
-  <Route path="/register" element={<RegisterPage />} />
-  <Route path="/subscribe" element={<SubscriptionPage />} />
-  <Route path="/partner" element={<PartnerPage />} />
-  <Route path="/profile" element={<ProfilePage />} />
-  <Route path="/reset-password" element={<ResetPasswordPage />} />
-</Routes>
+          <Route path="/" element={adminOnlyRoute(<ComingSoonPage />)} />
+          <Route path="/home" element={adminOnlyRoute(<HomePage />)} />
+          <Route path="/products" element={adminOnlyRoute(<ProductListPage />)} />
+          <Route path="/products/:productId" element={adminOnlyRoute(<ProductDetail />)} />
+          <Route path="/cart" element={adminOnlyRoute(<CartPage />)} />
+          <Route path="/about" element={adminOnlyRoute(<AboutPage />)} />
+          <Route path="/contact" element={adminOnlyRoute(<ContactPage />)} />
+          <Route path="/login" element={adminOnlyRoute(<LoginPage />)} />
+          <Route path="/register" element={adminOnlyRoute(<RegisterPage />)} />
+          <Route path="/subscribe" element={adminOnlyRoute(<SubscriptionPage />)} />
+          <Route path="/partner" element={adminOnlyRoute(<PartnerPage />)} />
+          <Route path="/profile" element={adminOnlyRoute(<ProfilePage />)} />
+          <Route path="/reset-password" element={adminOnlyRoute(<ResetPasswordPage />)} />
+          <Route
+            path="/seller-dashboard"
+            element={
+              canAccessDashboard ? (
+                <SellerDashboard />
+              ) : (
+                <Navigate to="/home" replace />
+              )
+            }
+          />
+          <Route
+            path="*"
+            element={<Navigate to={isAdmin ? '/seller-dashboard' : '/home'} replace />}
+          />
+        </Routes>
       </main>
 
       {!isComingSoon && <Footer />}
 
-      {/* Message Modal */}
       {showMessageModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white px-6 py-4 rounded-lg shadow-lg">

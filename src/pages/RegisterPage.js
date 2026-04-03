@@ -1,9 +1,10 @@
 import React, { useState, useContext } from 'react';
-import { AppContext } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
 
+import { AppContext } from '../context/AppContext';
+
 const RegisterPage = () => {
-  const { supabase, showMessage } = useContext(AppContext);
+  const { registerUser, showMessage, isSupabaseConfigured } = useContext(AppContext);
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
@@ -11,37 +12,26 @@ const RegisterPage = () => {
   const [role, setRole] = useState('buyer');
 
   const handleRegister = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        role: role,
-      },
-    },
-  });
+    const { error, mode } = await registerUser({
+      email,
+      password,
+      nextRole: role,
+    });
 
-  if (error) {
-    showMessage(error.message);
-    return;
-  }
+    if (error) {
+      showMessage(error.message);
+      return;
+    }
 
-  // 🔥 optional but best practice
-  if (data.user) {
-    await supabase.from('users').insert([
-      {
-        id: data.user.id,
-        email: email,
-        role: role,
-      },
-    ]);
-  }
-
-  showMessage('Registered successfully!');
-  navigate('/login');
-};
+    showMessage(
+      mode === 'local'
+        ? 'Demo account ready. You can start shopping now.'
+        : 'Registered successfully!'
+    );
+    navigate(role === 'seller' || role === 'admin' ? '/seller-dashboard' : '/home');
+  };
 
   return (
     <section className="max-w-md mx-auto p-6 bg-white rounded shadow">
@@ -53,6 +43,8 @@ const RegisterPage = () => {
           placeholder="Email"
           className="w-full border p-2"
           onChange={(e) => setEmail(e.target.value)}
+          value={email}
+          required
         />
 
         <input
@@ -60,10 +52,11 @@ const RegisterPage = () => {
           placeholder="Password"
           className="w-full border p-2"
           onChange={(e) => setPassword(e.target.value)}
+          value={password}
+          required
         />
 
-        {/* 🔥 Role Selection */}
-        <div className="flex gap-4">
+        {/* <div className="flex gap-4">
           <label>
             <input
               type="radio"
@@ -83,12 +76,16 @@ const RegisterPage = () => {
             />
             Seller
           </label>
-        </div>
+        </div> */}
 
-        <button className="w-full bg-green-600 text-white py-2">
-          Register
-        </button>
+        <button className="w-full bg-green-600 text-white py-2">Register</button>
       </form>
+
+      {!isSupabaseConfigured && (
+        <p className="mt-4 text-sm text-gray-500">
+          Demo mode is active. Registration is stored locally in this browser.
+        </p>
+      )}
     </section>
   );
 };

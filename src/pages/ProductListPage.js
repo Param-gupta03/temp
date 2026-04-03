@@ -1,57 +1,51 @@
 import React, { useContext, useEffect, useState } from 'react';
-import ProductList from '../components/ProductList';
-import { AppContext } from '../context/AppContext';
 import { Mail, Phone } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+import ProductList from '../components/ProductList';
+import { AppContext } from '../context/AppContext';
+
 const ProductListPage = () => {
   const navigate = useNavigate();
-  const { supabase, addToCart } = useContext(AppContext);
+  const { fetchProducts } = useContext(AppContext);
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*');
-
-      if (!error) setProducts(data || []);
+    const loadProducts = async () => {
+      const { data } = await fetchProducts();
+      setProducts(data || []);
       setLoading(false);
     };
 
-    fetchProducts();
-  }, [supabase]);
+    loadProducts();
+  }, [fetchProducts]);
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-[50vh]">
-        <p className="text-lg font-semibold animate-pulse">
-          Loading products...
-        </p>
+        <p className="text-lg font-semibold animate-pulse">Loading products...</p>
       </div>
     );
   }
+   
 
   return (
     <section className="py-12 px-4 md:px-8 bg-gray-50 min-h-screen">
-
-      {products.length === 0 ? (
+      {/* {products.length === 0 ? ( jb launch hoga to bss isko camment se httna h baki sub same rhaga  */
+        1 ? ( //ya wla line jb tk product use nhi krna h tb tk hi use hoga 
         <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-8 md:p-12 text-center">
-
           <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-6">
-            🌱 Products Coming Soon!
+            Products Coming Soon!
           </h2>
 
           <p className="text-gray-600 text-lg mb-10 leading-relaxed">
-            We're building a curated collection of eco-friendly products just for you.
-            Stay tuned — something amazing is on the way 🚀
+            We are building a curated collection of eco-friendly products just for you.
+            Stay tuned because something great is on the way.
           </p>
 
-          {/* Partner Card */}
           <div className="bg-gradient-to-br from-green-100 to-green-50 p-8 rounded-xl border border-green-200 shadow-md">
-
             <h3 className="text-2xl font-semibold text-gray-800 mb-4">
               Become a Partner
             </h3>
@@ -78,22 +72,14 @@ const ProductListPage = () => {
                 +91 9254579730
               </p>
             </div>
-
           </div>
         </div>
       ) : (
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-10">
-            🛍️ Our Products
-          </h2>
-
-          <ProductList
-            products={products}
-            addToCart={addToCart}
-          />
+          <h2 className="text-3xl font-bold text-center mb-10">Our Products</h2>
+          <ProductList products={products} />
         </div>
       )}
-
     </section>
   );
 };

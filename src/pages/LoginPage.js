@@ -1,15 +1,19 @@
 import React, { useState, useContext } from 'react';
-import { AppContext } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
 
+import { AppContext } from '../context/AppContext';
+
 const LoginPage = () => {
-  const { supabase, showMessage } = useContext(AppContext);
+  const { loginUser, requestPasswordReset, showMessage, isSupabaseConfigured } =
+    useContext(AppContext);
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [resetEmail, setResetEmail] = useState('');
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [isSendingReset, setIsSendingReset] = useState(false);
 
-  // ---------------- LOGIN ----------------
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -18,63 +22,54 @@ const LoginPage = () => {
       return;
     }
 
-    // 🔥 Step 1: Login
-    const { error: loginError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { error, role } = await loginUser({ email, password });
 
-    if (loginError) {
-      showMessage(loginError.message);
+    if (error) {
+      showMessage(error.message);
       return;
     }
 
-    // 🔥 Step 2: Get user
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    // 🔥 Step 3: Get role
-    const { data, error: roleError } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    // 🔥 Safety check
-    if (roleError || !data) {
-      console.error('Role not found:', roleError);
-      showMessage('Login successful (defaulting to buyer)');
-      navigate('/home');
-      return;
-    }
-
-    // 🔥 Redirect based on role
-    if (data.role === 'seller') {
-      navigate('/seller-dashboard');
-    } else {
-      navigate('/home');
-    }
+    navigate(role === 'seller' || role === 'admin' ? '/seller-dashboard' : '/home');
   };
 
-  // ---------------- FORGOT PASSWORD ----------------
-  const handleForgotPassword = async () => {
-    if (!email) {
-      showMessage('Please enter your email above to receive a reset link.');
+  const toggleForgotPassword = () => {
+    setShowForgotPassword((prev) => {
+      const nextValue = !prev;
+
+      if (!prev) {
+        setResetEmail(email);
+      }
+
+      return nextValue;
+    });
+  };
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+
+    if (!resetEmail) {
+      showMessage('Please enter your email to receive a reset link.');
       return;
     }
 
-    const resetUrl = 'https://thegreenturtles.in/reset-password';
+    setIsSendingReset(true);
 
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: resetUrl,
-    });
+    const { error, mode } = await requestPasswordReset(resetEmail);
+
+    setIsSendingReset(false);
 
     if (error) {
       showMessage(`Error: ${error.message}`);
-    } else {
-      showMessage('Password reset link sent! Check your email.');
+      return;
     }
+
+    showMessage(
+      mode === 'local'
+        ? 'Demo mode: password reset is simulated locally.'
+        : 'Password reset link sent! Check your email.'
+    );
+    setEmail(resetEmail);
+    setShowForgotPassword(false);
   };
 
   return (
@@ -85,9 +80,7 @@ const LoginPage = () => {
 
       <form onSubmit={handleLogin} className="space-y-6">
         <div>
-          <label className="block text-gray-700 text-sm font-medium mb-2">
-            Email
-          </label>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Email</label>
           <input
             type="email"
             value={email}
@@ -99,9 +92,7 @@ const LoginPage = () => {
         </div>
 
         <div>
-          <label className="block text-gray-700 text-sm font-medium mb-2">
-            Password
-          </label>
+          <label className="block text-gray-700 text-sm font-medium mb-2">Password</label>
           <input
             type="password"
             value={password}
@@ -114,13 +105,62 @@ const LoginPage = () => {
           <div className="text-right mt-1">
             <button
               type="button"
-              onClick={handleForgotPassword}
+              onClick={toggleForgotPassword}
               className="text-sm text-gray-500 hover:text-green-600 hover:underline"
             >
               Forgot Password?
             </button>
           </div>
         </div>
+
+        {showForgotPassword && (
+          <div className="rounded-lg border border-green-100 bg-green-50 p-4 space-y-3">
+            <div>
+              <h3 className="text-sm font-semibold text-green-900">Reset your password</h3>
+              <p className="text-sm text-green-800 mt-1">
+                Enter your email and we&apos;ll send you a password reset link.
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-gray-700 text-sm font-medium mb-2">
+                Reset Email
+              </label>
+              <input
+                type="email"
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                placeholder="your.email@example.com"
+              />
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                disabled={isSendingReset}
+                className="flex-1 bg-green-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-green-700 transition duration-300 disabled:opacity-70"
+              >
+                {isSendingReset ? 'Sending...' : 'Send Reset Link'}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowForgotPassword(false)}
+                className="flex-1 border border-gray-300 text-gray-700 font-semibold py-3 px-4 rounded-lg hover:bg-gray-100 transition duration-300"
+              >
+                Cancel
+              </button>
+            </div>
+
+            {!isSupabaseConfigured && (
+              <p className="text-xs text-gray-600">
+                Demo mode is active, so the reset request will be simulated locally.
+              </p>
+            )}
+          </div>
+        )}
 
         <button
           type="submit"
@@ -139,6 +179,12 @@ const LoginPage = () => {
           Register
         </button>
       </p>
+
+      {!isSupabaseConfigured && (
+        <p className="text-center text-sm text-gray-500 mt-4">
+          Demo mode is active. Use any email and password to explore the storefront.
+        </p>
+      )}
     </section>
   );
 };

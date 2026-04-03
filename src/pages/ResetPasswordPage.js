@@ -1,20 +1,25 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { AppContext } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
 
+import { AppContext } from '../context/AppContext';
+
 const ResetPasswordPage = () => {
-  const { supabase, showMessage } = useContext(AppContext);
+  const { supabase, showMessage, updatePassword, isSupabaseConfigured } =
+    useContext(AppContext);
   const navigate = useNavigate();
 
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!isSupabaseConfigured || !supabase) {
+      setLoading(false);
+      return;
+    }
+
     const handleRecovery = async () => {
-      // Clear any existing session
       await supabase.auth.signOut();
 
-      // Get tokens from URL
       const hashParams = new URLSearchParams(window.location.hash.substring(1));
       const queryParams = new URLSearchParams(window.location.search);
 
@@ -22,8 +27,7 @@ const ResetPasswordPage = () => {
         hashParams.get('access_token') || queryParams.get('access_token');
       const refresh_token =
         hashParams.get('refresh_token') || queryParams.get('refresh_token');
-      const type =
-        hashParams.get('type') || queryParams.get('type');
+      const type = hashParams.get('type') || queryParams.get('type');
 
       if (type !== 'recovery' || !access_token || !refresh_token) {
         showMessage('Invalid or expired reset link');
@@ -42,14 +46,12 @@ const ResetPasswordPage = () => {
         return;
       }
 
-      // Clean URL
       window.history.replaceState({}, document.title, '/reset-password');
-
       setLoading(false);
     };
 
     handleRecovery();
-  }, [supabase, showMessage]);
+  }, [isSupabaseConfigured, showMessage, supabase]);
 
   const handleUpdatePassword = async (e) => {
     e.preventDefault();
@@ -59,17 +61,24 @@ const ResetPasswordPage = () => {
       return;
     }
 
-    const { error } = await supabase.auth.updateUser({
-      password,
-    });
+    const { error } = await updatePassword(password);
 
     if (error) {
       showMessage(error.message);
-    } else {
-      showMessage('Password updated successfully! Please login.');
-      await supabase.auth.signOut();
-      navigate('/login'); // correct navigation
+      return;
     }
+
+    showMessage(
+      isSupabaseConfigured
+        ? 'Password updated successfully! Please login.'
+        : 'Demo mode: password reset completed.'
+    );
+
+    if (isSupabaseConfigured && supabase) {
+      await supabase.auth.signOut();
+    }
+
+    navigate('/login');
   };
 
   if (loading) {
@@ -78,9 +87,7 @@ const ResetPasswordPage = () => {
 
   return (
     <section className="py-8 bg-white rounded-lg shadow-lg p-6 md:p-10 max-w-md mx-auto">
-      <h2 className="text-3xl font-bold text-center mb-6">
-        Set New Password
-      </h2>
+      <h2 className="text-3xl font-bold text-center mb-6">Set New Password</h2>
 
       <form onSubmit={handleUpdatePassword} className="space-y-4">
         <input
@@ -99,6 +106,12 @@ const ResetPasswordPage = () => {
           Update Password
         </button>
       </form>
+
+      {!isSupabaseConfigured && (
+        <p className="mt-4 text-sm text-gray-500">
+          Demo mode is active. This page is available for UI testing.
+        </p>
+      )}
     </section>
   );
 };
