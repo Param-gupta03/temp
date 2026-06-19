@@ -1,0 +1,16 @@
+
+> green-turtle-website@0.1.0 dev
+> next dev
+
+   ▲ Next.js 15.1.0
+   - Local:        http://localhost:3001
+   - Network:      http://10.219.240.138:3001
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 2.2s
+ ○ Compiling /subscribe ...
+ ✓ Compiled /subscribe in 6.3s (760 modules)
+ GET / 200 in 6649ms
+ GET /subscribe 200 in 6550ms
+[?25h
