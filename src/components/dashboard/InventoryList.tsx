@@ -42,7 +42,14 @@ const InventoryList = ({ products, onDelete }: InventoryListProps) => {
 
               <div className="flex-grow">
                 <div className="flex justify-between items-start mb-1">
-                  <h3 className="font-bold text-lg text-white">{product.name}</h3>
+                  <h3 className="font-bold text-lg text-white flex items-center gap-2">
+                    {product.name}
+                    {product.is_verified ? (
+                      <span className="text-[10px] bg-green-500/10 text-green-400 px-2 py-0.5 rounded-full border border-green-500/20 font-black uppercase tracking-wider">Verified</span>
+                    ) : (
+                      <span className="text-[10px] bg-yellow-500/10 text-yellow-400 px-2 py-0.5 rounded-full border border-yellow-500/20 font-black uppercase tracking-wider">Pending Verification</span>
+                    )}
+                  </h3>
                   <span className="text-sm font-black text-green-400">Rs. {product.price}</span>
                 </div>
                 <div className="flex items-center gap-4 text-xs text-slate-500 font-bold uppercase tracking-widest">

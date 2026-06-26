@@ -18,8 +18,7 @@ const HomePage = () => {
     const loadProducts = async () => {
       if (fetchProducts) {
         const { data } = await fetchProducts({ limit: 4 });
-        // setProducts(data || []); jb production ma jna hoga to bss isko comment out kra dena h 
-        setProducts(mockProducts); // or isko comment kr denha h 
+        setProducts(data && data.length > 0 ? data : mockProducts);
       } else {
         setProducts(mockProducts);
       }

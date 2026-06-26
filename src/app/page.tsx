@@ -20,7 +20,7 @@ const ComingSoonPage = () => {
             <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-64 h-64 bg-emerald-500/10 rounded-full blur-[80px]"></div>
 
             <div className="animate-bounce-slow mb-8 relative z-10">
-                <div className="bg-green-500/20 p-6 rounded-[2rem] border border-green-500/20">
+                <div className="bg-green-500 p-6 rounded-[2rem] border border-green-500/20">
                     <SvgLogo width="100" height="100" className="text-green-500 mx-auto md:w-28 md:h-28" />
                 </div>
             </div>

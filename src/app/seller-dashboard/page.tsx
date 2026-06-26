@@ -27,7 +27,11 @@ const SellerDashboard = () => {
     category: '',
     image_url: '',
     number_of_item: '',
+    material_used: '',
+    weight: '',
   });
+
+  const walletBalance = user?.user_metadata?.wallet || 0;
 
   const loadProducts = useCallback(async () => {
     if (!user) {
@@ -67,6 +71,8 @@ const SellerDashboard = () => {
       category: form.category,
       imageUrl: form.image_url,
       numberOfItem: form.number_of_item,
+      material_used: form.material_used,
+      weight: form.weight,
     });
 
     if (error) {
@@ -82,6 +88,8 @@ const SellerDashboard = () => {
       category: '',
       image_url: '',
       number_of_item: '',
+      material_used: '',
+      weight: '',
     });
     loadProducts();
   };
@@ -108,7 +116,7 @@ const SellerDashboard = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-12 text-slate-100">
-      <DashboardHeader productCount={products.length} />
+      <DashboardHeader productCount={products.length} walletBalance={walletBalance} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <AddProductForm 

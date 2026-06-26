@@ -109,6 +109,27 @@ const AddProductForm = ({ form, setForm, handleUpload, handleAddProduct }: AddPr
           </div>
         </div>
 
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-400">Material Used</label>
+            <input
+              placeholder="e.g. Bamboo, Cotton"
+              className="w-full bg-slate-900/50 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition"
+              value={form.material_used}
+              onChange={(e) => setForm({ ...form, material_used: e.target.value })}
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-400">Weight (kg/g)</label>
+            <input
+              placeholder="e.g. 500g"
+              className="w-full bg-slate-900/50 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition"
+              value={form.weight}
+              onChange={(e) => setForm({ ...form, weight: e.target.value })}
+            />
+          </div>
+        </div>
+
         <div className="space-y-2">
           <label className="text-sm font-medium text-slate-400">Category</label>
           <input

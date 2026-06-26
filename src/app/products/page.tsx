@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 
 import ProductList from '@/components/ProductList';
 import { AppContext } from '@/context/AppContext';
+import PartnerPage from '../partner/page';
 
 const ProductListPage = () => {
   const router = useRouter();
@@ -31,12 +32,12 @@ const ProductListPage = () => {
       </div>
     );
   }
-   
-
+  // return(
+  // <PartnerPage/> 
+  // )
   return (
     <section className="py-12 px-4 md:px-8 bg-slate-900 min-h-screen">
-      {/* {products.length === 0 ? ( jb launch hoga to bss isko camment se httna h baki sub same rhaga  */
-        1 ? ( //ya wla line jb tk product use nhi krna h tb tk hi use hoga 
+      {products.length === 0 ? (
         <div className="max-w-4xl mx-auto bg-slate-800/40 border border-slate-700 rounded-[2.5rem] shadow-2xl p-8 md:p-16 text-center backdrop-blur-md">
           <div className="w-20 h-20 bg-green-500/10 rounded-3xl flex items-center justify-center mx-auto mb-8 rotate-3">
             <Package className="text-green-500 w-10 h-10" />

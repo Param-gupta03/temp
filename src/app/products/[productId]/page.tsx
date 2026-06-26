@@ -12,6 +12,10 @@ const ProductDetail = () => {
   const { addToCart, getProductById }: any = useContext(AppContext);
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  
+  // Carbon LCA states
+  const [lca, setLca] = useState<any>(null);
+  const [lcaLoading, setLcaLoading] = useState(true);
 
   useEffect(() => {
     const loadProduct = async () => {
@@ -22,6 +26,40 @@ const ProductDetail = () => {
 
     loadProduct();
   }, [getProductById, productId]);
+
+  useEffect(() => {
+    if (!product) return;
+    
+    const getCarbonFootprint = async () => {
+      setLcaLoading(true);
+      try {
+        const response = await fetch('/api/carbon-footprint', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: product.name,
+            category: product.category,
+            description: product.description,
+            materialUsed: product.material_used || 'Sustainable materials',
+            weight: product.weight || '500g',
+          }),
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setLca(data);
+        }
+      } catch (err) {
+        console.error("Failed to load LCA carbon data", err);
+      } finally {
+        setLcaLoading(false);
+      }
+    };
+
+    getCarbonFootprint();
+  }, [product]);
 
   if (loading) {
     return <div className="text-center py-12 text-lg font-medium">Loading product...</div>;
@@ -76,11 +114,27 @@ const ProductDetail = () => {
             </div>
 
             <div className="space-y-8 flex-grow">
-              <div className="p-4 bg-slate-900/50 rounded-2xl border border-slate-700">
-                <p className="text-sm text-slate-400 mb-1 font-medium">Availability</p>
-                <div className="text-lg font-bold text-white flex items-center gap-2">
-                  <div className={`w-2 h-2 rounded-full ${Number(product.numberOfItem || 0) > 0 ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                  {Number(product.numberOfItem || 0) > 0 ? `${product.numberOfItem} units in stock` : 'Out of stock'}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="p-4 bg-slate-900/50 rounded-2xl border border-slate-700">
+                  <p className="text-sm text-slate-400 mb-1 font-medium">Availability</p>
+                  <div className="text-lg font-bold text-white flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${Number(product.numberOfItem || 0) > 0 ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                    {Number(product.numberOfItem || 0) > 0 ? `${product.numberOfItem} units` : 'Out of stock'}
+                  </div>
+                </div>
+                
+                <div className="p-4 bg-slate-900/50 rounded-2xl border border-slate-700">
+                  <p className="text-sm text-slate-400 mb-1 font-medium">Material</p>
+                  <div className="text-lg font-bold text-white line-clamp-1">
+                    {product.material_used || 'Sustainable'}
+                  </div>
+                </div>
+
+                <div className="p-4 bg-slate-900/50 rounded-2xl border border-slate-700">
+                  <p className="text-sm text-slate-400 mb-1 font-medium">Weight</p>
+                  <div className="text-lg font-bold text-white line-clamp-1">
+                    {product.weight || 'N/A'}
+                  </div>
                 </div>
               </div>
 
@@ -111,6 +165,116 @@ const ProductDetail = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Carbon LCA Assessment Panel */}
+      <div className="mt-12 bg-slate-800/40 border border-slate-700 rounded-[3rem] p-8 md:p-12 shadow-2xl backdrop-blur-sm relative overflow-hidden">
+        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-emerald-500/5 rounded-full blur-[80px]"></div>
+        
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 pb-6 border-b border-slate-700/50">
+          <div>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-400 border border-emerald-500/20 mb-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              AI-Powered LCA
+            </span>
+            <h2 className="text-2xl md:text-3xl font-black text-white">
+              Lifecycle <span className="text-emerald-400">Carbon Footprint</span>
+            </h2>
+          </div>
+          <div className="text-slate-400 text-sm font-medium">
+            Analyzed from raw manufacturing to final disposal.
+          </div>
+        </div>
+
+        {lcaLoading ? (
+          <div className="flex flex-col items-center justify-center py-12 gap-4">
+            <div className="w-12 h-12 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin"></div>
+            <p className="text-slate-400 font-bold text-sm animate-pulse">Running Environmental Life Cycle Assessment...</p>
+          </div>
+        ) : lca ? (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
+            
+            {/* Left Column: Big metrics and comparison bar */}
+            <div className="lg:col-span-5 flex flex-col justify-center space-y-6">
+              <div className="bg-slate-900/60 p-6 rounded-[2rem] border border-slate-700 text-center relative overflow-hidden">
+                <div className="absolute top-0 left-0 bg-emerald-500 text-slate-900 text-xs font-black px-4 py-1.5 rounded-br-2xl">
+                  CO2e SAVED
+                </div>
+                <p className="text-5xl font-black text-emerald-400 mt-4 mb-1">
+                  -{lca.reductionPercentage}%
+                </p>
+                <p className="text-slate-400 font-bold text-sm">
+                  {lca.reductionAmount} kg CO2e saved per unit
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <div className="flex justify-between text-xs font-bold uppercase text-slate-400 tracking-wider mb-2">
+                    <span>This Eco Product</span>
+                    <span className="text-emerald-400">{lca.ecoProductFootprint} kg CO2e</span>
+                  </div>
+                  <div className="w-full bg-slate-950 rounded-full h-4 overflow-hidden border border-slate-800">
+                    <div 
+                      className="bg-gradient-to-r from-emerald-500 to-green-400 h-full rounded-full transition-all duration-1000"
+                      style={{ width: `${Math.max(10, Math.min(100, (lca.ecoProductFootprint / lca.normalProductFootprint) * 100))}%` }}
+                    ></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-xs font-bold uppercase text-slate-400 tracking-wider mb-2">
+                    <span>Conventional Market Alternative</span>
+                    <span className="text-red-400">{lca.normalProductFootprint} kg CO2e</span>
+                  </div>
+                  <div className="w-full bg-slate-950 rounded-full h-4 overflow-hidden border border-slate-800">
+                    <div 
+                      className="bg-gradient-to-r from-red-500 to-pink-500 h-full rounded-full transition-all duration-1000"
+                      style={{ width: '100%' }}
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Stage-by-stage break down and explanation */}
+            <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
+              <div className="bg-slate-900/40 p-6 rounded-3xl border border-slate-700/60 leading-relaxed text-slate-300 font-medium text-sm">
+                <p>{lca.explanation}</p>
+              </div>
+
+              <div className="space-y-3">
+                <h4 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Lifecycle Stage Emissions (kg CO2e)</h4>
+                
+                {Object.entries(lca.stages).map(([stage, values]: any) => {
+                  const ecoVal = Number(values.eco);
+                  const normVal = Number(values.normal);
+                  const stagePct = normVal > 0 ? Math.round(((normVal - ecoVal) / normVal) * 100) : 0;
+                  
+                  return (
+                    <div key={stage} className="flex items-center justify-between p-3 bg-slate-900/30 rounded-2xl border border-slate-700/40 hover:bg-slate-900/50 transition">
+                      <span className="text-sm font-bold text-slate-300 capitalize">{stage}</span>
+                      <div className="flex items-center gap-4">
+                        <div className="text-right">
+                          <p className="text-xs text-slate-400 font-bold">Eco: <span className="text-emerald-400 font-black">{ecoVal}</span></p>
+                          <p className="text-xs text-slate-400 font-bold">Normal: <span className="text-red-400 font-black">{normVal}</span></p>
+                        </div>
+                        {stagePct > 0 && (
+                          <span className="bg-emerald-500/10 text-emerald-400 text-[10px] font-black px-2 py-1 rounded-md border border-emerald-500/20">
+                            -{stagePct}%
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+          </div>
+        ) : (
+          <div className="text-center text-slate-400 py-6">Could not fetch carbon footprint report.</div>
+        )}
       </div>
     </section>
   );

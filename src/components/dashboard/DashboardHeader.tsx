@@ -2,7 +2,7 @@
 import React from 'react';
 import { LayoutDashboard } from 'lucide-react';
 
-const DashboardHeader = ({ productCount }: { productCount: number }) => {
+const DashboardHeader = ({ productCount, walletBalance = 0 }: { productCount: number, walletBalance?: number }) => {
   return (
     <div className="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-6">
       <div>
@@ -22,6 +22,11 @@ const DashboardHeader = ({ productCount }: { productCount: number }) => {
         <div className="text-center">
           <p className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">Total Sales</p>
           <p className="text-3xl font-black text-green-500">Rs. 0</p>
+        </div>
+        <div className="w-[1px] h-10 bg-slate-700"></div>
+        <div className="text-center">
+          <p className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">Wallet</p>
+          <p className="text-3xl font-black text-yellow-500">Rs. {walletBalance}</p>
         </div>
       </div>
     </div>

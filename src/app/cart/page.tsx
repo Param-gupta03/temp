@@ -7,10 +7,17 @@ import { ShoppingBag, Trash2, Plus, Minus, ArrowRight } from 'lucide-react';
 import { AppContext } from '@/context/AppContext';
 
 const CartPage = () => {
-  const { cart, updateCartQuantity, removeFromCart, clearCart, showMessage }: any =
+  const { user, cart, updateCartQuantity, removeFromCart, clearCart, showMessage, awardEcoCoins, spendEcoCoins, creditSellerWallet, updateProductStock }: any =
     useContext(AppContext);
 
+  const [useCoins, setUseCoins] = React.useState(false);
+
   const total = cart.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0);
+  const userCoins = user?.user_metadata?.eco_coins || 0;
+  const coinsToUse = useCoins ? Math.min(userCoins, Math.floor(total)) : 0;
+  const discount = coinsToUse; // 1 coin = Rs. 1
+  const finalTotal = Math.max(0, total - discount);
+  const coinsToEarn = Math.floor(finalTotal / 100); // 1 coin per 100 Rs of net cash paid
 
   return (
     <section className="max-w-4xl mx-auto py-12 px-4">
@@ -93,6 +100,26 @@ const CartPage = () => {
                   <span>Subtotal</span>
                   <span>Rs. {total.toFixed(2)}</span>
                 </div>
+                {userCoins > 0 && (
+                  <div className="flex items-center justify-between bg-slate-900/50 p-3 rounded-xl border border-slate-700">
+                    <label className="flex items-center gap-3 cursor-pointer text-sm text-slate-300 font-bold select-none">
+                      <input 
+                        type="checkbox" 
+                        checked={useCoins} 
+                        onChange={(e) => setUseCoins(e.target.checked)} 
+                        className="rounded border-slate-700 bg-slate-800 text-green-500 focus:ring-green-500 w-4 h-4"
+                      />
+                      Use Eco Coins ({userCoins} available)
+                    </label>
+                    {useCoins && <span className="text-green-400 font-black">- Rs. {coinsToUse}</span>}
+                  </div>
+                )}
+                {discount > 0 && (
+                  <div className="flex justify-between text-green-400 font-medium">
+                    <span>Discount (Eco Coins)</span>
+                    <span>- Rs. {discount.toFixed(2)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-slate-400 font-medium">
                   <span>Shipping</span>
                   <span className="text-green-500 font-bold uppercase text-xs">Free</span>
@@ -100,13 +127,36 @@ const CartPage = () => {
                 <div className="h-px bg-slate-700 my-4"></div>
                 <div className="flex justify-between items-end">
                   <span className="text-white font-bold">Total Amount</span>
-                  <span className="text-3xl font-black text-green-400">Rs. {total.toFixed(2)}</span>
+                  <span className="text-3xl font-black text-green-400">Rs. {finalTotal.toFixed(2)}</span>
                 </div>
+                {user && (
+                  <div className="bg-green-500/10 p-3 rounded-xl border border-green-500/20 text-center">
+                    <p className="text-sm font-bold text-green-400">
+                      You will earn {coinsToEarn} Eco Coins!
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-4">
                 <button
-                  onClick={() => {
+                  onClick={async () => {
+                    // 1. Spend eco coins if checked
+                    if (user && coinsToUse > 0) {
+                      await spendEcoCoins(user.id, coinsToUse);
+                    }
+                    // 2. Award eco coins for new purchase
+                    if (user && coinsToEarn > 0) {
+                      await awardEcoCoins(user.id, coinsToEarn);
+                    }
+                    // 3. Credit seller wallets & deduct stocks
+                    for (const item of cart) {
+                      const sellerId = item.seller_id || 'local-seller';
+                      const itemTotal = item.price * item.quantity;
+                      await creditSellerWallet(sellerId, itemTotal);
+                      await updateProductStock(item.id, item.quantity);
+                    }
+
                     clearCart();
                     showMessage('Order placed successfully. Thank you for shopping green!');
                   }}

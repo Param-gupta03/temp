@@ -10,6 +10,8 @@ import {
   LogOut,
   ChevronDown,
   Settings,
+  ShieldCheck,
+  Leaf,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -30,10 +32,12 @@ const Header = ({ isComingSoon, isSubscriptionPage }: HeaderProps) => {
   // Role Logic
   const isAdmin = role === 'admin';
   const isSeller = role === 'seller';
-  const canAccessDashboard = isAdmin || isSeller;
+  const canAccessDashboard = isSeller;
 
   const cartItemCount =
     cart?.reduce((count: number, item: any) => count + (item.quantity || 0), 0) || 0;
+
+  const ecoCoins = user?.user_metadata?.eco_coins || 0;
 
   // Close profile dropdown when clicking outside
   useEffect(() => {
@@ -70,10 +74,18 @@ const Header = ({ isComingSoon, isSubscriptionPage }: HeaderProps) => {
         {/* Logo Button - Fixed Logic */}
         <button
           type="button"
-          onClick={() => router.push(canAccessDashboard ? '/seller-dashboard' : '/home')}
+          onClick={() => {
+            if (isAdmin) {
+              router.push('/admin/dashboard');
+            } else if (isSeller) {
+              router.push('/seller-dashboard');
+            } else {
+              router.push('/home');
+            }
+          }}
           className="text-2xl font-bold flex items-center gap-2 hover:opacity-90 transition-opacity"
         >
-          <div className="bg-green-500/20 p-2 rounded-xl">
+          <div className=" p-2 rounded-xl">
             <SvgLogo className="w-8 h-8 text-green-500 shrink-0 pointer-events-none" />
           </div>
           <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">Green Turtle</span>
@@ -83,6 +95,14 @@ const Header = ({ isComingSoon, isSubscriptionPage }: HeaderProps) => {
         <div className="hidden md:flex items-center space-x-8">
           {!(isComingSoon || isSubscriptionPage) && (
             <>
+              {isAdmin && (
+                <button
+                  onClick={() => goTo('admin/dashboard')}
+                  className="flex items-center gap-2 text-slate-300 hover:text-purple-400 font-medium transition-colors"
+                >
+                  <ShieldCheck className="w-5 h-5" /> Admin Panel
+                </button>
+              )}
               {canAccessDashboard ? (
                 <button
                   onClick={() => goTo('seller-dashboard')}
@@ -123,6 +143,11 @@ const Header = ({ isComingSoon, isSubscriptionPage }: HeaderProps) => {
                       </span>
                     )}
                   </button>
+                  {user && role === 'buyer' && (
+                    <div className="flex items-center gap-2 text-green-400 font-bold bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20">
+                      <Leaf className="w-4 h-4" /> {ecoCoins} Coins
+                    </div>
+                  )}
                 </>
               )}
 

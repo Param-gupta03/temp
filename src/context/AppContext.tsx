@@ -51,6 +51,18 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const storedUser = readJson(LOCAL_USER_STORAGE_KEY, null);
 
+    if (storedUser) {
+      // Sync local wallets and eco_coins into user_metadata for local mode consistency
+      const wallets = readJson('green-turtle-wallets', {});
+      const coins = readJson('green-turtle-eco-coins', {});
+      const userKey = storedUser.id;
+      storedUser.user_metadata = {
+        ...storedUser.user_metadata,
+        wallet: wallets[userKey] !== undefined ? wallets[userKey] : (storedUser.user_metadata?.wallet || 0),
+        eco_coins: coins[userKey] !== undefined ? coins[userKey] : (storedUser.user_metadata?.eco_coins || 0)
+      };
+    }
+
     setUser(storedUser);
     setRole(storedUser?.role || null);
     setCart(readJson(CART_STORAGE_KEY, []));
@@ -116,6 +128,12 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       if (!user) {
         setRole(null);
       }
+      return;
+    }
+
+    // Skip role fetching for local override admin or admin roles
+    if (user.id === 'admin-local' || (user as any).role === 'admin') {
+      setRole('admin');
       return;
     }
 
@@ -193,9 +211,12 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const clearCart = useCallback(() => setCart([]), []);
 
   const fetchProducts = useCallback(
-    async ({ limit, sellerId }: { limit?: number; sellerId?: string } = {}) => {
+    async ({ limit, sellerId, all = false }: { limit?: number; sellerId?: string; all?: boolean } = {}) => {
       if (!supabase) {
         let products = [...localProducts];
+        if (!all) {
+          products = products.filter(p => p.is_verified !== false);
+        }
         if (sellerId) {
           products = products.filter((product) => product.seller_id === sellerId);
         }
@@ -206,6 +227,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       }
 
       let query = supabase.from('products').select('*');
+      if (!all) {
+        query = query.eq('is_verified', true);
+      }
       if (sellerId) {
         query = query.eq('seller_id', sellerId);
       }
@@ -217,6 +241,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
       if (error) {
         let products = [...localProducts];
+        if (!all) {
+          products = products.filter(p => p.is_verified !== false);
+        }
         if (sellerId) {
           products = products.filter((product) => product.seller_id === sellerId);
         }
@@ -226,10 +253,27 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         return { data: products, error, source: 'fallback' };
       }
 
+      // Merge database products with local storage products to prevent data desync
+      const dbProducts = (data || []).map(normalizeProduct);
+      const dbIds = new Set(dbProducts.map(p => String(p.id)));
+      
+      let extraLocal = [...localProducts].filter(p => !dbIds.has(String(p.id)));
+      if (!all) {
+        extraLocal = extraLocal.filter(p => p.is_verified !== false);
+      }
+      if (sellerId) {
+        extraLocal = extraLocal.filter((product) => product.seller_id === sellerId);
+      }
+
+      let merged = [...dbProducts, ...extraLocal];
+      if (limit) {
+        merged = merged.slice(0, limit);
+      }
+
       return {
-        data: (data || []).map(normalizeProduct),
+        data: merged,
         error: null,
-        source: 'supabase',
+        source: 'supabase-merged',
       };
     },
     [localProducts, supabase]
@@ -296,6 +340,22 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const loginUser = useCallback(async ({ email, password }: any) => {
+    // Hardcoded Admin Override from .env (with fallbacks if server wasn't restarted)
+    const adminId = process.env.NEXT_PUBLIC_ADMIN_ID || 'admin';
+    const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin123';
+
+    if (email === adminId && password === adminPassword) {
+      const adminUser: any = {
+        id: `admin-local`,
+        email,
+        role: 'admin',
+        user_metadata: {},
+      };
+      setUser(adminUser);
+      setRole('admin');
+      return { error: null, user: adminUser, role: 'admin', mode: 'local-override' };
+    }
+
     if (!supabase) {
       const normalizedEmail = email.toLowerCase();
       const localRole = normalizedEmail.includes('admin')
@@ -303,11 +363,19 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         : normalizedEmail.includes('seller')
           ? 'seller'
           : 'buyer';
+      
+      const userKey = `local-${email}`;
+      const wallets = readJson('green-turtle-wallets', {});
+      const coins = readJson('green-turtle-eco-coins', {});
+
       const localUser: any = {
-        id: `local-${email}`,
+        id: userKey,
         email,
         role: localRole,
-        user_metadata: {},
+        user_metadata: {
+          wallet: wallets[userKey] || 0,
+          eco_coins: coins[userKey] || 0
+        },
       };
       setUser(localUser);
       setRole(localRole);
@@ -417,6 +485,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         const created = normalizeProduct({
           ...payload,
           id: `local-product-${Date.now()}`,
+          is_verified: false,
+          admin_price: null,
         });
         setLocalProducts((prev) => [created, ...prev]);
         return { data: created, error: null, mode: 'local' };
@@ -429,6 +499,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         category: payload.category,
         seller_id: payload.seller_id,
         image_url: payload.imageUrl || null,
+        material_used: payload.material_used || '',
+        weight: payload.weight || '',
+        is_verified: false,
+        admin_price: null,
       };
 
       let insertedData = null;
@@ -457,10 +531,22 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       }
 
       if (insertError) {
-        return { data: null, error: insertError, mode: 'supabase' };
+        // Fallback: save to local storage so product is not lost
+        const created = normalizeProduct({
+          ...payload,
+          id: `local-product-${Date.now()}`,
+          is_verified: false,
+          admin_price: null,
+        });
+        setLocalProducts((prev) => [created, ...prev]);
+        return { data: created, error: insertError, mode: 'fallback-local' };
       }
 
-      return { data: normalizeProduct(insertedData), error: null, mode: 'supabase' };
+      // Also add to local products to maintain state sync
+      const dbCreated = normalizeProduct(insertedData);
+      setLocalProducts((prev) => [dbCreated, ...prev]);
+
+      return { data: dbCreated, error: null, mode: 'supabase' };
     },
     [user, supabase]
   );
@@ -472,6 +558,198 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const { error } = await supabase.from('products').delete().eq('id', id);
+    return { error, mode: 'supabase' };
+  }, [supabase]);
+
+  const verifyProduct = useCallback(async (id: string | number, adminPrice: number) => {
+    if (!supabase) {
+      setLocalProducts((prev) => 
+        prev.map(p => p.id === id ? { ...p, is_verified: true, admin_price: adminPrice, price: adminPrice } : p)
+      );
+      return { error: null, mode: 'local' };
+    }
+
+    const { error } = await supabase.from('products').update({
+      is_verified: true,
+      admin_price: adminPrice,
+      price: adminPrice
+    }).eq('id', id);
+    return { error, mode: 'supabase' };
+  }, [supabase]);
+
+  const updateProduct = useCallback(async (id: string | number, updatedFields: any) => {
+    const payload = {
+      ...updatedFields,
+      price: updatedFields.price !== undefined ? Number(updatedFields.price) : undefined,
+      admin_price: updatedFields.admin_price !== undefined ? Number(updatedFields.admin_price) : undefined,
+      numberOfItem: updatedFields.numberOfItem !== undefined ? Number(updatedFields.numberOfItem) : undefined,
+    };
+    Object.keys(payload).forEach(key => payload[key] === undefined && delete payload[key]);
+
+    if (!supabase) {
+      setLocalProducts((prev) => 
+        prev.map(p => {
+          if (p.id === id) {
+            return normalizeProduct({ ...p, ...payload });
+          }
+          return p;
+        })
+      );
+      return { error: null, mode: 'local' };
+    }
+
+    const dbPayload: any = {};
+    if (payload.name !== undefined) dbPayload.name = payload.name;
+    if (payload.price !== undefined) dbPayload.price = payload.price;
+    if (payload.admin_price !== undefined) dbPayload.admin_price = payload.admin_price;
+    if (payload.description !== undefined) dbPayload.description = payload.description;
+    if (payload.category !== undefined) dbPayload.category = payload.category;
+    if (payload.material_used !== undefined) dbPayload.material_used = payload.material_used;
+    if (payload.weight !== undefined) dbPayload.weight = payload.weight;
+    if (payload.is_verified !== undefined) dbPayload.is_verified = payload.is_verified;
+    if (payload.imageUrl !== undefined || payload.image_url !== undefined) {
+      dbPayload.image_url = payload.imageUrl || payload.image_url;
+    }
+    
+    if (payload.numberOfItem !== undefined) {
+      const { data: product } = await supabase.from('products').select('*').eq('id', id).single();
+      const stockColumn = product && product['number_of_item'] !== undefined ? 'number_of_item' : 'Number of item';
+      dbPayload[stockColumn] = payload.numberOfItem;
+    }
+
+    const { error } = await supabase.from('products').update(dbPayload).eq('id', id);
+    return { error, mode: 'supabase' };
+  }, [supabase]);
+
+  const awardEcoCoins = useCallback(async (userId: string, amount: number) => {
+    if (!supabase) {
+      try {
+        const coins = readJson('green-turtle-eco-coins', {});
+        const userKey = userId || 'local-buyer';
+        coins[userKey] = (coins[userKey] || 0) + amount;
+        window.localStorage.setItem('green-turtle-eco-coins', JSON.stringify(coins));
+        
+        setUser((prev: any) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            user_metadata: { ...prev.user_metadata, eco_coins: coins[userKey] }
+          };
+        });
+      } catch (e) {
+        console.error(e);
+      }
+      return { error: null, mode: 'local' };
+    }
+
+    // In a real app, this should be done securely on the server via RPC or Edge Function
+    const { data: profile } = await supabase.from('profiles').select('eco_coins').eq('id', userId).single();
+    const currentCoins = profile?.eco_coins || 0;
+    
+    const { error } = await supabase.from('profiles').update({
+      eco_coins: currentCoins + amount
+    }).eq('id', userId);
+    
+    return { error, mode: 'supabase' };
+  }, [supabase]);
+
+  const spendEcoCoins = useCallback(async (userId: string, amount: number) => {
+    if (!supabase) {
+      try {
+        const coins = readJson('green-turtle-eco-coins', {});
+        const userKey = userId || 'local-buyer';
+        const current = coins[userKey] || 0;
+        coins[userKey] = Math.max(0, current - amount);
+        window.localStorage.setItem('green-turtle-eco-coins', JSON.stringify(coins));
+        
+        setUser((prev: any) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            user_metadata: { ...prev.user_metadata, eco_coins: coins[userKey] }
+          };
+        });
+      } catch (e) {
+        console.error(e);
+      }
+      return { error: null, mode: 'local' };
+    }
+
+    const { data: profile } = await supabase.from('profiles').select('eco_coins').eq('id', userId).single();
+    const currentCoins = profile?.eco_coins || 0;
+    
+    const { error } = await supabase.from('profiles').update({
+      eco_coins: Math.max(0, currentCoins - amount)
+    }).eq('id', userId);
+    
+    return { error, mode: 'supabase' };
+  }, [supabase]);
+
+  const creditSellerWallet = useCallback(async (sellerId: string, amount: number) => {
+    if (!supabase) {
+      try {
+        const wallets = readJson('green-turtle-wallets', {});
+        const sellerKey = sellerId || 'local-seller';
+        wallets[sellerKey] = (wallets[sellerKey] || 0) + amount;
+        window.localStorage.setItem('green-turtle-wallets', JSON.stringify(wallets));
+        
+        setUser((prev: any) => {
+          if (prev && (prev.id === sellerId || (sellerId === 'local-seller' && role === 'seller'))) {
+            return {
+              ...prev,
+              user_metadata: { ...prev.user_metadata, wallet: wallets[sellerKey] }
+            };
+          }
+          return prev;
+        });
+      } catch (e) {
+        console.error(e);
+      }
+      return { error: null, mode: 'local' };
+    }
+
+    const { data: profile } = await supabase.from('profiles').select('wallet').eq('id', sellerId).single();
+    const currentWallet = profile?.wallet || 0;
+    
+    const { error } = await supabase.from('profiles').update({
+      wallet: currentWallet + amount
+    }).eq('id', sellerId);
+    
+    return { error, mode: 'supabase' };
+  }, [role, supabase]);
+
+  const updateProductStock = useCallback(async (id: string | number, quantityPurchased: number) => {
+    if (!supabase) {
+      setLocalProducts((prev) => 
+        prev.map(p => {
+          if (p.id === id) {
+            const nextStock = Math.max(0, (p.numberOfItem || 0) - quantityPurchased);
+            return { ...p, numberOfItem: nextStock };
+          }
+          return p;
+        })
+      );
+      return { error: null, mode: 'local' };
+    }
+
+    const { data: product, error: fetchErr } = await supabase
+      .from('products')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (fetchErr || !product) {
+      return { error: fetchErr, mode: 'supabase' };
+    }
+
+    const stockColumn = product['number_of_item'] !== undefined ? 'number_of_item' : 'Number of item';
+    const currentStock = Number(product[stockColumn] || 0);
+    const nextStock = Math.max(0, currentStock - quantityPurchased);
+
+    const { error } = await supabase.from('products').update({
+      [stockColumn]: nextStock
+    }).eq('id', id);
+
     return { error, mode: 'supabase' };
   }, [supabase]);
 
@@ -505,6 +783,12 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       updatePassword,
       addSellerProduct,
       deleteSellerProduct,
+      verifyProduct,
+      updateProduct,
+      awardEcoCoins,
+      spendEcoCoins,
+      creditSellerWallet,
+      updateProductStock,
     }),
     [
       addSellerProduct,
@@ -531,6 +815,12 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       updatePassword,
       updateProfile,
       user,
+      verifyProduct,
+      updateProduct,
+      awardEcoCoins,
+      spendEcoCoins,
+      creditSellerWallet,
+      updateProductStock,
     ]
   );
 
