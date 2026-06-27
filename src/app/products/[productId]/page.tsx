@@ -39,6 +39,7 @@ const ProductDetail = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
+            productId: product.id,
             name: product.name,
             category: product.category,
             description: product.description,
@@ -208,11 +209,14 @@ const ProductDetail = () => {
                 </p>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div>
-                  <div className="flex justify-between text-xs font-bold uppercase text-slate-400 tracking-wider mb-2">
-                    <span>This Eco Product</span>
-                    <span className="text-emerald-400">{lca.ecoProductFootprint} kg CO2e</span>
+                  <div className="flex justify-between items-end text-xs font-bold uppercase text-slate-400 tracking-wider mb-2">
+                    <span className="flex flex-col">
+                      <span className="text-emerald-400">{lca.ecoProductName || product.name || 'This Eco Product'}</span>
+                      <span className="text-[10px] text-slate-500 normal-case mt-0.5">Material: {product.material_used || 'Sustainable'}</span>
+                    </span>
+                    <span className="text-emerald-400">{lca.ecoProductFootprint} kg</span>
                   </div>
                   <div className="w-full bg-slate-950 rounded-full h-4 overflow-hidden border border-slate-800">
                     <div 
@@ -223,9 +227,12 @@ const ProductDetail = () => {
                 </div>
 
                 <div>
-                  <div className="flex justify-between text-xs font-bold uppercase text-slate-400 tracking-wider mb-2">
-                    <span>Conventional Market Alternative</span>
-                    <span className="text-red-400">{lca.normalProductFootprint} kg CO2e</span>
+                  <div className="flex justify-between items-end text-xs font-bold uppercase text-slate-400 tracking-wider mb-2">
+                    <span className="flex flex-col">
+                      <span className="text-red-400">{lca.normalProductName || 'Conventional Alternative'}</span>
+                      <span className="text-[10px] text-slate-500 normal-case mt-0.5">Material: {lca.normalProductMaterial || 'Standard Market Material'}</span>
+                    </span>
+                    <span className="text-red-400">{lca.normalProductFootprint} kg</span>
                   </div>
                   <div className="w-full bg-slate-950 rounded-full h-4 overflow-hidden border border-slate-800">
                     <div 

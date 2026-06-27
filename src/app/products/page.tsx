@@ -32,9 +32,9 @@ const ProductListPage = () => {
       </div>
     );
   }
-  // return(
-  // <PartnerPage/> 
-  // )
+  return(
+  <PartnerPage/> 
+  )
   return (
     <section className="py-12 px-4 md:px-8 bg-slate-900 min-h-screen">
       {products.length === 0 ? (
