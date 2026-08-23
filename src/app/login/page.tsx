@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { AppContext } from '@/context/AppContext';
 
 const LoginPage = () => {
-  const { loginUser, requestPasswordReset, showMessage, isSupabaseConfigured }: any =
+  const { loginUser, requestPasswordReset, showMessage }: any =
     useContext(AppContext);
   const router = useRouter();
 
@@ -31,7 +31,7 @@ const LoginPage = () => {
       return;
     }
 
-    router.push(role === 'seller' || role === 'admin' ? '/seller-dashboard' : '/');
+    router.push(role === 'seller' || role === 'admin' ? '/seller-dashboard' : '/landing');
   };
 
   const toggleForgotPassword = () => {
@@ -172,11 +172,6 @@ const LoginPage = () => {
           </button>
         </p>
 
-        {!isSupabaseConfigured && (
-          <p className="text-center text-xs text-slate-600 mt-6 italic">
-            Demo mode active. Any credentials will work.
-          </p>
-        )}
       </div>
     </section>
   );

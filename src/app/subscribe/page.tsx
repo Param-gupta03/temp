@@ -10,7 +10,7 @@ import { apiUrl } from '@/config/api';
 const SubscriptionPage = () => {
   const [email, setEmail] = useState('');
   const router = useRouter();
-  const { supabase, showMessage, setIsGeneratingImage, isSupabaseConfigured }: any =
+  const { showMessage, setIsGeneratingImage }: any =
     useContext(AppContext);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -25,45 +25,22 @@ const SubscriptionPage = () => {
     setIsGeneratingImage(true);
 
     try {
-      if (!isSupabaseConfigured || !supabase) {
-        showMessage('Thanks for subscribing. Demo mode is active.');
+      const response = await fetch(apiUrl('/api/subscribe'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        showMessage('Subscription successful! Check your email.');
         setEmail('');
-        return;
-      }
-
-      const { error } = await supabase.from('subscriptions').insert([{ email }]);
-
-      if (error) {
-        if (error.code === '23505') {
-          showMessage('This email is already subscribed.');
-        } else {
-          showMessage(error.message || 'Subscription failed.');
-        }
       } else {
-        try {
-          const response = await fetch(apiUrl('/api/send-email'), {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              email,
-              type: 'Subscription'
-            }),
-          });
-
-          if (!response.ok) {
-            showMessage('Subscription saved, but welcome email failed.');
-          } else {
-            showMessage('Subscription successful! Check your email.');
-          }
-        } catch (emailErr) {
-          console.error('Subscription email error:', emailErr);
-          showMessage('Subscription saved, but welcome email failed.');
-        }
-
-        setEmail('');
+        showMessage(data.message || 'Subscription failed.');
       }
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      console.error('Subscription error:', err);
       showMessage('An unexpected error occurred.');
     } finally {
       setIsGeneratingImage(false);

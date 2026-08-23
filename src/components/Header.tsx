@@ -80,7 +80,7 @@ const Header = ({ isComingSoon, isSubscriptionPage }: HeaderProps) => {
             } else if (isSeller) {
               router.push('/seller-dashboard');
             } else {
-              router.push('/home');
+              router.push('/landing');
             }
           }}
           className="text-2xl font-bold flex items-center gap-2 hover:opacity-90 transition-opacity"

@@ -1,14 +1,7 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { connectToDatabase } from '@/lib/mongodb';
 
 export const runtime = 'nodejs';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-
-const supabase = (supabaseUrl && supabaseAnonKey)
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : null;
 
 async function fetchGeminiLCA(name: string, category: string, description: string, materialUsed: string, weight: string) {
   const apiKey = process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY;
@@ -184,20 +177,22 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Product name is required' }, { status: 400 });
     }
 
-    // 1. Try to fetch from database if productId is provided and Supabase is configured
-    if (productId && supabase) {
-      try {
-        const { data: product, error } = await supabase
-          .from('products')
-          .select('carbon_footprint')
-          .eq('id', productId)
-          .maybeSingle();
+    // 1. Try to fetch from database if productId is provided
+    let db;
+    try {
+      const dbConnection = await connectToDatabase();
+      db = dbConnection.db;
+    } catch (e) {
+      console.warn("Could not connect to MongoDB:", e);
+    }
 
-        if (!error && product?.carbon_footprint) {
+    if (productId && db) {
+      try {
+        const product = await db.collection('products').findOne({ id: productId });
+
+        if (product && product.carbon_footprint) {
           // Found cached carbon footprint in the database!
           return NextResponse.json({ ...product.carbon_footprint, source: 'database' });
-        } else if (error) {
-          console.warn('Error fetching carbon footprint from database (column might not exist yet):', error.message);
         }
       } catch (dbError: any) {
         console.warn('Database error while checking carbon footprint cache:', dbError.message);
@@ -216,16 +211,15 @@ export async function POST(request: Request) {
       source = 'estimator';
     }
 
-    // 3. Save to database if productId is provided, Supabase is configured, and it's a valid ID
-    if (productId && supabase) {
+    // 3. Save to database if productId is provided
+    if (productId && db) {
       try {
-        const { error } = await supabase
-          .from('products')
-          .update({ carbon_footprint: data })
-          .eq('id', productId);
-        
-        if (error) {
-          console.warn('Failed to cache carbon footprint in database:', error.message);
+        const result = await db.collection('products').updateOne(
+          { id: productId },
+          { $set: { carbon_footprint: data } }
+        );
+        if (result.matchedCount === 0) {
+          console.warn(`Product ${productId} not found to cache carbon footprint.`);
         } else {
           console.log(`Successfully cached carbon footprint for product ${productId} in database.`);
         }

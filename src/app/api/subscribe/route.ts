@@ -17,6 +17,22 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Save subscription in MongoDB
+    try {
+      const { connectToDatabase } = await import("@/lib/mongodb");
+      const { db } = await connectToDatabase();
+      const normalizedEmail = email.toLowerCase().trim();
+      const existing = await db.collection("subscriptions").findOne({ email: normalizedEmail });
+      if (!existing) {
+        await db.collection("subscriptions").insertOne({
+          email: normalizedEmail,
+          created_at: new Date(),
+        });
+      }
+    } catch (dbErr: any) {
+      console.error("MongoDB subscription insert failed:", dbErr.message);
+    }
+
     // Send welcome email to subscriber
     await resend.emails.send({
       from: "Eco App <onboarding@resend.dev>",

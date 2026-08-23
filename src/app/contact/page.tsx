@@ -6,7 +6,7 @@ import { AppContext } from '@/context/AppContext';
 import { apiUrl } from '@/config/api';
 
 const ContactPage = () => {
-    const { supabase, showMessage, setIsGeneratingImage }: any = useContext(AppContext);
+    const { showMessage, setIsGeneratingImage }: any = useContext(AppContext);
 
     const [formData, setFormData] = useState({
         Name: '',
@@ -35,12 +35,16 @@ const ContactPage = () => {
         setIsGeneratingImage(true);
 
         try {
-            // 1. Save to Supabase
-            const { error: dbError } = await supabase
-                .from('contact_inquiries')
-                .insert([formData]);
+            // 1. Save to MongoDB
+            const dbResponse = await fetch(apiUrl('/api/contact'), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
 
-            if (dbError) console.error('Supabase Error:', dbError);
+            if (!dbResponse.ok) {
+                console.error('Contact Inquiry Save Error:', await dbResponse.text());
+            }
 
             // 2. Send Email via our new server
             const response = await fetch(apiUrl('/api/send-email'), {

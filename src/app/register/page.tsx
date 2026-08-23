@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { AppContext } from '@/context/AppContext';
 
 const RegisterPage = () => {
-  const { registerUser, showMessage, isSupabaseConfigured }: any = useContext(AppContext);
+  const { registerUser, showMessage }: any = useContext(AppContext);
   const router = useRouter();
 
   const [email, setEmail] = useState('');
@@ -42,7 +42,7 @@ const RegisterPage = () => {
         ? 'Demo account ready. You can start shopping now.'
         : 'Registered successfully!'
     );
-    router.push(role === 'seller' || role === 'admin' ? '/seller-dashboard' : '/');
+    router.push(role === 'seller' || role === 'admin' ? '/seller-dashboard' : '/landing');
   };
 
   return (
@@ -135,11 +135,6 @@ const RegisterPage = () => {
         </button>
       </form>
 
-      {!isSupabaseConfigured && (
-        <p className="mt-6 text-center text-sm text-gray-500 italic">
-          Demo mode: registration data will be saved locally.
-        </p>
-      )}
     </section>
   );
 };

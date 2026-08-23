@@ -8,15 +8,20 @@ import { AppContext } from "@/context/AppContext";
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { showMessageModal, message, setShowMessageModal } = useContext(AppContext) || {};
-  const isComingSoon = pathname === "/";
+  const isComingSoonPage = pathname === "/";
+  const isLandingPage = pathname === "/landing";
+  const isSubscriptionPage = pathname === "/subscribe";
+
+  const showHeaderFooter = !isComingSoonPage;
+  const useFullWidth = isComingSoonPage || isLandingPage;
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-900 text-slate-100 selection:bg-green-500/30">
-      {!isComingSoon && <Header />}
-      <main className="flex-grow container mx-auto px-4 py-8">
+      {showHeaderFooter && <Header isSubscriptionPage={isSubscriptionPage} />}
+      <main className={`flex-grow ${useFullWidth ? "" : "container mx-auto px-4 py-8"}`}>
         {children}
       </main>
-      {!isComingSoon && <Footer />}
+      {showHeaderFooter && <Footer />}
 
       {showMessageModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 animate-in fade-in duration-300">

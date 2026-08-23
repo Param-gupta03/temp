@@ -6,42 +6,8 @@ import { AppContext } from '@/context/AppContext';
 import { useRouter } from 'next/navigation';
 import { apiUrl } from '@/config/api';
 
-const getSupabaseErrorMessage = (error: unknown) => {
-    if (!error) {
-        return 'Unknown Supabase error.';
-    }
-
-    if (error instanceof Error) {
-        return error.message;
-    }
-
-    if (typeof error === 'object') {
-        const supabaseError = error as {
-            message?: string;
-            details?: string;
-            hint?: string;
-            code?: string;
-        };
-
-        if (supabaseError.code === 'PGRST205') {
-            return 'Partnership inquiries are not set up in Supabase yet. Please create the partner_inquiries table.';
-        }
-
-        const message = [
-            supabaseError.message,
-            supabaseError.details,
-            supabaseError.hint,
-            supabaseError.code ? `Code: ${supabaseError.code}` : null,
-        ].filter(Boolean).join(' ');
-
-        return message || 'Unknown Supabase error.';
-    }
-
-    return String(error);
-};
-
 const PartnerPage = () => {
-    const { supabase, showMessage, setIsGeneratingImage, isSupabaseConfigured }: any = useContext(AppContext);
+    const { showMessage, setIsGeneratingImage }: any = useContext(AppContext);
     const router = useRouter();
 
     const [formData, setFormData] = useState({
@@ -67,23 +33,19 @@ const PartnerPage = () => {
             return;
         }
 
-        if (!isSupabaseConfigured || !supabase) {
-            showMessage('Supabase is not configured. Please check your environment variables.');
-            return;
-        }
-
         showMessage('Sending partnership inquiry...');
         setIsGeneratingImage(true);
 
         try {
-            const { error } = await supabase
-                .from('partner_inquiries')
-                .insert([formData]);
+            const dbResponse = await fetch(apiUrl('/api/partner'), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
 
-            if (error) {
-                const errorMessage = getSupabaseErrorMessage(error);
-                console.warn('Supabase partner inquiry insert failed:', errorMessage, error);
-                showMessage(errorMessage || 'Failed to send inquiry.');
+            if (!dbResponse.ok) {
+                console.warn('Partner inquiry save failed');
+                showMessage('Failed to send inquiry.');
             } else {
                 // 2. Send Email via our API
                 try {
@@ -111,10 +73,9 @@ const PartnerPage = () => {
                 
                 setFormData({ contact_name: '', email: '', phone: '', message: '' });
             }
-        } catch (error) {
-            const errorMessage = getSupabaseErrorMessage(error);
-            console.warn('Error submitting partner form:', errorMessage, error);
-            showMessage(errorMessage || 'An unexpected error occurred. Please try again later.');
+        } catch (error: any) {
+            console.warn('Error submitting partner form:', error.message);
+            showMessage('An unexpected error occurred. Please try again later.');
         } finally {
             setIsGeneratingImage(false);
         }

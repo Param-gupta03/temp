@@ -6,54 +6,11 @@ import { useRouter } from 'next/navigation';
 import { AppContext } from '@/context/AppContext';
 
 const ResetPasswordPage = () => {
-  const { supabase, showMessage, updatePassword, isSupabaseConfigured }: any =
-    useContext(AppContext);
+  const { showMessage, updatePassword }: any = useContext(AppContext);
   const router = useRouter();
 
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!isSupabaseConfigured || !supabase) {
-      setLoading(false);
-      return;
-    }
-
-    const handleRecovery = async () => {
-      await supabase.auth.signOut();
-
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-      const queryParams = new URLSearchParams(window.location.search);
-
-      const access_token =
-        hashParams.get('access_token') || queryParams.get('access_token');
-      const refresh_token =
-        hashParams.get('refresh_token') || queryParams.get('refresh_token');
-      const type = hashParams.get('type') || queryParams.get('type');
-
-      if (type !== 'recovery' || !access_token || !refresh_token) {
-        showMessage('Invalid or expired reset link');
-        setLoading(false);
-        return;
-      }
-
-      const { error } = await supabase.auth.setSession({
-        access_token,
-        refresh_token,
-      });
-
-      if (error) {
-        showMessage(error.message);
-        setLoading(false);
-        return;
-      }
-
-      window.history.replaceState({}, document.title, '/reset-password');
-      setLoading(false);
-    };
-
-    handleRecovery();
-  }, [isSupabaseConfigured, showMessage, supabase]);
+  const [loading, setLoading] = useState(false);
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,16 +27,7 @@ const ResetPasswordPage = () => {
       return;
     }
 
-    showMessage(
-      isSupabaseConfigured
-        ? 'Password updated successfully! Please login.'
-        : 'Demo mode: password reset completed.'
-    );
-
-    if (isSupabaseConfigured && supabase) {
-      await supabase.auth.signOut();
-    }
-
+    showMessage('Password updated successfully! Please login.');
     router.push('/login');
   };
 
@@ -113,11 +61,6 @@ const ResetPasswordPage = () => {
           </button>
         </form>
 
-        {!isSupabaseConfigured && (
-          <p className="mt-8 text-center text-xs text-slate-600 italic">
-            Demo mode active. This is a UI simulation.
-          </p>
-        )}
       </div>
     </section>
   );
