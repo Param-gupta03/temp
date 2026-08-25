@@ -7,8 +7,8 @@ import ClientLayout from "@/components/ClientLayout";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Green Turtle",
-  description: "Green Turtle - Your eco-friendly marketplace.",
+  title: "The Green Turtles",
+  description: "Making sustainable choices easier to discover. A curated platform helping people discover, compare and understand sustainable products from emerging and trusted brands.",
 };
 
 export default function RootLayout({

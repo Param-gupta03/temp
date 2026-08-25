@@ -88,7 +88,7 @@ const Header = ({ isComingSoon, isSubscriptionPage }: HeaderProps) => {
           <div className=" p-2 rounded-xl">
             <SvgLogo className="w-8 h-8 text-green-500 shrink-0 pointer-events-none" />
           </div>
-          <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">Green Turtle</span>
+          <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">The Green Turtles</span>
         </button>
 
         {/* Navigation Links */}

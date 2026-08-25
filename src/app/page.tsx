@@ -28,17 +28,16 @@ const ComingSoonPage = () => {
         </div>
 
         <h1 className="mb-6 animate-fade-in text-5xl font-black leading-none text-slate-100 sm:text-6xl md:text-7xl">
-          Green <span className="text-[#2bd27d]">Turtle</span>
+          The Green <span className="text-[#2bd27d]">Turtles</span>
         </h1>
 
         <p className="mb-8 animate-fade-in delay-200 text-2xl font-bold uppercase tracking-[0.22em] text-slate-300 md:text-[2rem]">
           Launching Soon
         </p>
 
-        <p className="mx-auto mb-12 max-w-[650px] animate-fade-in delay-400 text-lg font-semibold leading-relaxed text-slate-400 md:text-[1.35rem]">
-          Get ready for a revolutionary marketplace connecting you with the best
-          eco-friendly products. We&apos;re building a greener future, one
-          sustainable choice at a time.
+        <p className="mx-auto mb-12 max-w-[750px] animate-fade-in delay-400 text-lg font-semibold leading-relaxed text-slate-400 md:text-[1.35rem]">
+          Making sustainable choices easier to discover.<br />
+          A curated platform helping people discover, compare and understand sustainable products from emerging and trusted brands.
         </p>
 
         <div className="flex w-full max-w-[410px] flex-col gap-6 sm:w-auto sm:max-w-none sm:flex-row">

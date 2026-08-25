@@ -54,7 +54,7 @@ const ProductListPage = () => {
             </h3>
 
             <p className="text-slate-400 mb-8 max-w-md mx-auto">
-              Join Green Turtle's exclusive partner network and showcase your sustainable products to the world.
+              Join The Green Turtles' exclusive partner network and showcase your sustainable products to the world.
             </p>
 
             <button
@@ -65,17 +65,17 @@ const ProductListPage = () => {
             </button>
 
             <div className="flex flex-col md:flex-row items-center justify-center gap-6 text-slate-300">
-              <p className="flex items-center gap-2 hover:text-green-400 transition cursor-pointer">
+              <a href="mailto:dishasikka@thegreenturtles.in" className="flex items-center gap-2 hover:text-green-400 transition cursor-pointer">
                 <Mail className="w-5 h-5 text-green-500" />
-                greenturtle.marketplace@gmail.com
-              </p>
+                dishasikka@thegreenturtles.in
+              </a>
 
               <div className="hidden md:block w-1.5 h-1.5 bg-slate-700 rounded-full"></div>
 
-              <p className="flex items-center gap-2 hover:text-green-400 transition cursor-pointer">
+              <a href="tel:+919254579730" className="flex items-center gap-2 hover:text-green-400 transition cursor-pointer">
                 <Phone className="w-5 h-5 text-green-500" />
                 +91 9254579730
-              </p>
+              </a>
             </div>
           </div>
         </div>

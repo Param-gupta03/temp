@@ -11,7 +11,7 @@ const SvgLogo = ({ width = "120", height = "120", className = "" }: SvgLogoProps
         <div className={`flex items-center justify-center ${className}`} style={{ width: width, height: height }}>
             <img 
                 src="/logo.png" 
-                alt="Green Turtle Logo" 
+                alt="The Green Turtles Logo" 
                 className="max-w-full max-h-full object-contain"
             />
         </div>

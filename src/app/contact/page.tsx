@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useContext } from 'react';
-import { Mail, MapPin, Phone, Send, CheckCircle } from 'lucide-react';
+import { Mail, MapPin, Phone, Send, CheckCircle, Globe, Instagram } from 'lucide-react';
 import { AppContext } from '@/context/AppContext';
 import { apiUrl } from '@/config/api';
 
@@ -187,7 +187,39 @@ const ContactPage = () => {
                                 </div>
                                 <div>
                                     <p className="font-bold text-white">Email Address</p>
-                                    <p className="text-slate-400">greenturtle.marketplace@gmail.com</p>
+                                    <p className="text-slate-400">
+                                        <a href="mailto:dishasikka@thegreenturtles.in" className="hover:text-green-500 transition">
+                                            dishasikka@thegreenturtles.in
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-start gap-4">
+                                <div className="p-3 bg-teal-500/10 rounded-xl">
+                                    <Globe className="w-6 h-6 text-teal-500" />
+                                </div>
+                                <div>
+                                    <p className="font-bold text-white">Website</p>
+                                    <p className="text-slate-400">
+                                        <a href="https://thegreenturtles.in" target="_blank" rel="noopener noreferrer" className="hover:text-green-500 transition">
+                                            thegreenturtles.in
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-start gap-4">
+                                <div className="p-3 bg-pink-500/10 rounded-xl">
+                                    <Instagram className="w-6 h-6 text-pink-500" />
+                                </div>
+                                <div>
+                                    <p className="font-bold text-white">Instagram</p>
+                                    <p className="text-slate-400">
+                                        <a href="https://instagram.com/thegreenturtles.in" target="_blank" rel="noopener noreferrer" className="hover:text-green-500 transition">
+                                            @thegreenturtles.in
+                                        </a>
+                                    </p>
                                 </div>
                             </div>
                         </div>

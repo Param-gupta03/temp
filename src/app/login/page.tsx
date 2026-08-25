@@ -78,7 +78,7 @@ const LoginPage = () => {
     <section className="py-12 px-4">
       <div className="bg-slate-800/40 border border-slate-700 rounded-[2.5rem] p-8 md:p-12 max-w-lg mx-auto shadow-2xl backdrop-blur-sm">
         <h2 className="text-4xl font-black text-white text-center mb-10">
-          Login to <span className="text-green-500">Green Turtle</span>
+          Login to <span className="text-green-500">The Green Turtles</span>
         </h2>
 
         <form onSubmit={handleLogin} className="space-y-6">

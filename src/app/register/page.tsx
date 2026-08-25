@@ -48,7 +48,7 @@ const RegisterPage = () => {
   return (
     <section className="max-w-lg mx-auto p-8 bg-gray-900 text-white rounded-2xl shadow-2xl border border-gray-800">
       <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-green-400 to-emerald-600 bg-clip-text text-transparent">
-        Join Green Turtle
+        Join The Green Turtles
       </h2>
 
       <div className="flex justify-center gap-4 mb-8">
