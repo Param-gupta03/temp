@@ -46,95 +46,110 @@ const RegisterPage = () => {
   };
 
   return (
-    <section className="max-w-lg mx-auto p-8 bg-gray-900 text-white rounded-2xl shadow-2xl border border-gray-800">
-      <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-green-400 to-emerald-600 bg-clip-text text-transparent">
-        Join The Green Turtles
-      </h2>
-
-      <div className="flex justify-center gap-4 mb-8">
-        <button
-          type="button"
-          onClick={() => setRole('buyer')}
-          className={`px-6 py-2 rounded-full transition ${role === 'buyer' ? 'bg-green-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}
-        >
-          Buyer
-        </button>
-        <button
-          type="button"
-          onClick={() => setRole('seller')}
-          className={`px-6 py-2 rounded-full transition ${role === 'seller' ? 'bg-green-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}
-        >
-          Seller
-        </button>
-      </div>
-
-      <form onSubmit={handleRegister} className="space-y-5">
-        <div>
-          <label className="block text-sm font-medium mb-1 text-gray-300">Email Address</label>
-          <input
-            type="email"
-            placeholder="name@company.com"
-            className="w-full bg-gray-800 border border-gray-700 p-3 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
-            required
-          />
+    <section className="py-12 px-4">
+      <div className="max-w-md mx-auto p-8 md:p-10 bg-white text-[#1c1917] rounded-3xl shadow-sm border border-[#ede4d5]">
+        <div className="text-center mb-6 space-y-1">
+          <span className="text-xs uppercase tracking-wider text-[#8d6b4f] font-semibold">Join the Movement</span>
+          <h2 className="text-3xl font-serif font-bold text-[#1c1917]">
+            Join <span className="text-[#2f4739]">The Green Turtles</span>
+          </h2>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium mb-1 text-gray-300">Password</label>
-          <input
-            type="password"
-            placeholder="••••••••"
-            className="w-full bg-gray-800 border border-gray-700 p-3 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-            required
-          />
+        <div className="flex justify-center gap-3 mb-8">
+          <button
+            type="button"
+            onClick={() => setRole('buyer')}
+            className={`px-5 py-2 rounded-full text-xs font-semibold transition ${role === 'buyer' ? 'bg-[#2f4739] text-[#faf7f2] shadow-xs' : 'bg-[#f7f4ee] border border-[#ede4d5] text-[#66615b] hover:bg-[#ede4d5]/60'}`}
+          >
+            Buyer
+          </button>
+          <button
+            type="button"
+            onClick={() => setRole('seller')}
+            className={`px-5 py-2 rounded-full text-xs font-semibold transition ${role === 'seller' ? 'bg-[#2f4739] text-[#faf7f2] shadow-xs' : 'bg-[#f7f4ee] border border-[#ede4d5] text-[#66615b] hover:bg-[#ede4d5]/60'}`}
+          >
+            Seller
+          </button>
         </div>
 
-        {role === 'seller' && (
-          <div className="space-y-5 animate-in fade-in slide-in-from-top-4 duration-300">
-            <div>
-              <label className="block text-sm font-medium mb-1 text-gray-300">Shop Name</label>
-              <input
-                type="text"
-                placeholder="Turtle's Green Shop"
-                className="w-full bg-gray-800 border border-gray-700 p-3 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
-                onChange={(e) => setShopName(e.target.value)}
-                value={shopName}
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1 text-gray-300">GST Number</label>
-              <input
-                type="text"
-                placeholder="22AAAAA0000A1Z5"
-                className="w-full bg-gray-800 border border-gray-700 p-3 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition uppercase"
-                onChange={(e) => setGstNo(e.target.value)}
-                value={gstNo}
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1 text-gray-300">Shop Location / Address</label>
-              <textarea
-                placeholder="Full address of your shop"
-                className="w-full bg-gray-800 border border-gray-700 p-3 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition h-24"
-                onChange={(e) => setShopLocation(e.target.value)}
-                value={shopLocation}
-                required
-              />
-            </div>
+        <form onSubmit={handleRegister} className="space-y-4">
+          <div>
+            <label className="block text-xs font-semibold mb-1 text-[#1c1917]">Email Address</label>
+            <input
+              type="email"
+              placeholder="name@company.com"
+              className="w-full bg-[#faf7f2] border border-[#ede4d5] px-4 py-2.5 rounded-xl focus:border-[#2f4739] focus:outline-none text-[#1c1917] placeholder:text-[#a8a29e] transition text-sm"
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+              required
+            />
           </div>
-        )}
 
-        <button className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold py-3 rounded-xl hover:from-green-700 hover:to-emerald-700 transition transform hover:scale-[1.02] active:scale-[0.98] shadow-lg">
-          Create Account
-        </button>
-      </form>
+          <div>
+            <label className="block text-xs font-semibold mb-1 text-[#1c1917]">Password</label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              className="w-full bg-[#faf7f2] border border-[#ede4d5] px-4 py-2.5 rounded-xl focus:border-[#2f4739] focus:outline-none text-[#1c1917] placeholder:text-[#a8a29e] transition text-sm"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              required
+            />
+          </div>
 
+          {role === 'seller' && (
+            <div className="space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
+              <div>
+                <label className="block text-xs font-semibold mb-1 text-[#1c1917]">Shop Name</label>
+                <input
+                  type="text"
+                  placeholder="Turtle's Green Shop"
+                  className="w-full bg-[#faf7f2] border border-[#ede4d5] px-4 py-2.5 rounded-xl focus:border-[#2f4739] focus:outline-none text-[#1c1917] placeholder:text-[#a8a29e] transition text-sm"
+                  onChange={(e) => setShopName(e.target.value)}
+                  value={shopName}
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold mb-1 text-[#1c1917]">GST Number</label>
+                <input
+                  type="text"
+                  placeholder="22AAAAA0000A1Z5"
+                  className="w-full bg-[#faf7f2] border border-[#ede4d5] px-4 py-2.5 rounded-xl focus:border-[#2f4739] focus:outline-none text-[#1c1917] placeholder:text-[#a8a29e] transition uppercase text-sm"
+                  onChange={(e) => setGstNo(e.target.value)}
+                  value={gstNo}
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold mb-1 text-[#1c1917]">Shop Location / Address</label>
+                <textarea
+                  placeholder="Full address of your shop"
+                  className="w-full bg-[#faf7f2] border border-[#ede4d5] px-4 py-2.5 rounded-xl focus:border-[#2f4739] focus:outline-none text-[#1c1917] placeholder:text-[#a8a29e] transition h-20 text-sm resize-none"
+                  onChange={(e) => setShopLocation(e.target.value)}
+                  value={shopLocation}
+                  required
+                />
+              </div>
+            </div>
+          )}
+
+          <button className="w-full bg-[#2f4739] text-[#faf7f2] font-semibold py-3 rounded-full hover:bg-[#23372c] transition shadow-sm text-sm mt-2">
+            Create Account
+          </button>
+        </form>
+
+        <p className="text-center text-[#66615b] mt-6 text-xs font-medium">
+          Already have an account?{' '}
+          <button
+            onClick={() => router.push('/login')}
+            className="text-[#2f4739] hover:underline font-semibold"
+          >
+            Login
+          </button>
+        </p>
+
+      </div>
     </section>
   );
 };

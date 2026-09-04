@@ -15,8 +15,8 @@ const NavLink = ({ href, children }: NavLinkProps) => {
   return (
     <Link
       href={href}
-      className={`text-sm font-medium transition-colors ${
-        isActive ? 'text-green-500' : 'text-slate-400 hover:text-slate-200'
+      className={`text-sm transition-colors ${
+        isActive ? 'text-[#2f4739] font-semibold' : 'text-[#1c1917]/75 hover:text-[#2f4739] font-medium'
       }`}
     >
       {children}

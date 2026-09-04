@@ -70,88 +70,91 @@ const AddProductForm = ({ form, setForm, handleUpload, handleAddProduct }: AddPr
   };
 
   return (
-    <div className="bg-slate-800/40 p-8 rounded-3xl border border-slate-700 shadow-xl backdrop-blur-sm sticky top-8">
-      <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-        <Upload className="text-green-500 w-6 h-6" /> Add Product
-      </h2>
+    <div className="bg-white p-7 rounded-3xl border border-[#ede4d5] shadow-sm sticky top-8 text-[#1c1917]">
+      <div className="space-y-1 mb-5">
+        <span className="text-xs uppercase tracking-wider text-[#8d6b4f] font-semibold">New Listing</span>
+        <h2 className="text-xl font-serif font-bold flex items-center gap-2 text-[#1c1917]">
+          <Upload className="text-[#2f4739] w-5 h-5" /> Add Product
+        </h2>
+      </div>
 
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-400">Product Name</label>
+      <div className="space-y-3.5">
+        <div className="space-y-1">
+          <label className="text-xs font-semibold text-[#1c1917]">Product Name</label>
           <input
             placeholder="e.g. Bamboo Toothbrush"
-            className="w-full bg-slate-900/50 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition"
+            className="w-full bg-[#faf7f2] border border-[#ede4d5] px-3.5 py-2.5 rounded-xl focus:border-[#2f4739] focus:outline-none transition text-xs text-[#1c1917] placeholder:text-[#a8a29e]"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-400">Price (Rs.)</label>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-[#1c1917]">Price (Rs.)</label>
             <input
               placeholder="299"
               type="number"
-              className="w-full bg-slate-900/50 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition"
+              className="w-full bg-[#faf7f2] border border-[#ede4d5] px-3.5 py-2.5 rounded-xl focus:border-[#2f4739] focus:outline-none transition text-xs text-[#1c1917] placeholder:text-[#a8a29e]"
               value={form.price}
               onChange={(e) => setForm({ ...form, price: e.target.value })}
             />
           </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-400">Quantity</label>
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-[#1c1917]">Quantity</label>
             <input
               placeholder="50"
               type="number"
-              className="w-full bg-slate-900/50 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition"
+              className="w-full bg-[#faf7f2] border border-[#ede4d5] px-3.5 py-2.5 rounded-xl focus:border-[#2f4739] focus:outline-none transition text-xs text-[#1c1917] placeholder:text-[#a8a29e]"
               value={form.number_of_item}
               onChange={(e) => setForm({ ...form, number_of_item: e.target.value })}
             />
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-400">Material Used</label>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-[#1c1917]">Material Used</label>
             <input
               placeholder="e.g. Bamboo, Cotton"
-              className="w-full bg-slate-900/50 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition"
+              className="w-full bg-[#faf7f2] border border-[#ede4d5] px-3.5 py-2.5 rounded-xl focus:border-[#2f4739] focus:outline-none transition text-xs text-[#1c1917] placeholder:text-[#a8a29e]"
               value={form.material_used}
               onChange={(e) => setForm({ ...form, material_used: e.target.value })}
             />
           </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-400">Weight (kg/g)</label>
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-[#1c1917]">Weight (kg/g)</label>
             <input
               placeholder="e.g. 500g"
-              className="w-full bg-slate-900/50 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition"
+              className="w-full bg-[#faf7f2] border border-[#ede4d5] px-3.5 py-2.5 rounded-xl focus:border-[#2f4739] focus:outline-none transition text-xs text-[#1c1917] placeholder:text-[#a8a29e]"
               value={form.weight}
               onChange={(e) => setForm({ ...form, weight: e.target.value })}
             />
           </div>
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-400">Category</label>
+        <div className="space-y-1">
+          <label className="text-xs font-semibold text-[#1c1917]">Category</label>
           <input
             placeholder="e.g. Personal Care"
-            className="w-full bg-slate-900/50 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition"
+            className="w-full bg-[#faf7f2] border border-[#ede4d5] px-3.5 py-2.5 rounded-xl focus:border-[#2f4739] focus:outline-none transition text-xs text-[#1c1917] placeholder:text-[#a8a29e]"
             value={form.category}
             onChange={(e) => setForm({ ...form, category: e.target.value })}
           />
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-400">Description</label>
+        <div className="space-y-1">
+          <label className="text-xs font-semibold text-[#1c1917]">Description</label>
           <textarea
             placeholder="What makes this product special?"
-            className="w-full bg-slate-900/50 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition h-24"
+            className="w-full bg-[#faf7f2] border border-[#ede4d5] px-3.5 py-2.5 rounded-xl focus:border-[#2f4739] focus:outline-none transition h-20 text-xs text-[#1c1917] placeholder:text-[#a8a29e] resize-none"
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
           />
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-400">Product Image</label>
+        <div className="space-y-1.5">
+          <label className="text-xs font-semibold text-[#1c1917]">Product Image</label>
           <input
             ref={fileInputRef}
             type="file"
@@ -160,18 +163,18 @@ const AddProductForm = ({ form, setForm, handleUpload, handleAddProduct }: AddPr
             onChange={handleFileChange}
           />
           {form.image_url ? (
-            <div className="relative group rounded-xl overflow-hidden border border-slate-700">
-              <img src={form.image_url} alt="Preview" className="w-full h-32 object-cover" />
+            <div className="relative group rounded-xl overflow-hidden border border-[#ede4d5]">
+              <img src={form.image_url} alt="Preview" className="w-full h-28 object-cover" />
               <button
                 type="button"
                 onClick={() => setForm({ ...form, image_url: '' })}
-                className="absolute top-2 right-2 bg-red-500 p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition shadow-lg"
+                className="absolute top-2 right-2 bg-[#a74338] text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition shadow-sm"
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash2 className="w-3.5 h-3.5" />
               </button>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               <div className="flex gap-2">
                 <button
                   type="button"
@@ -180,29 +183,29 @@ const AddProductForm = ({ form, setForm, handleUpload, handleAddProduct }: AddPr
                     fileInputRef.current?.click();
                   }}
                   disabled={uploading}
-                  className="flex-1 border border-slate-700 p-3 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 transition text-sm font-medium flex items-center justify-center gap-2 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="flex-1 border border-[#ede4d5] bg-[#faf7f2] p-2 rounded-xl text-[#66615b] hover:text-[#1c1917] hover:bg-[#f7f4ee] transition text-xs font-medium flex items-center justify-center gap-1.5 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {uploading ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   ) : (
-                    <UploadCloud className="w-4 h-4" />
+                    <UploadCloud className="w-3.5 h-3.5 text-[#2f4739]" />
                   )}
                   {uploading ? 'Uploading' : 'Upload'}
                 </button>
                 <button
                   type="button"
                   onClick={generatePlaceholderUrl}
-                  className="flex-1 border border-slate-700 p-3 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 transition text-sm font-medium"
+                  className="flex-1 border border-[#ede4d5] bg-[#faf7f2] p-2 rounded-xl text-[#66615b] hover:text-[#1c1917] hover:bg-[#f7f4ee] transition text-xs font-medium flex items-center justify-center gap-1"
                 >
-                  <ImagePlus className="w-4 h-4 inline mr-2" />
+                  <ImagePlus className="w-3.5 h-3.5 text-[#8d6b4f]" />
                   Placeholder
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowUrlInput(!showUrlInput)}
-                  className="flex-1 border border-slate-700 p-3 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 transition text-sm font-medium flex items-center justify-center gap-2"
+                  className="flex-1 border border-[#ede4d5] bg-[#faf7f2] p-2 rounded-xl text-[#66615b] hover:text-[#1c1917] hover:bg-[#f7f4ee] transition text-xs font-medium flex items-center justify-center gap-1"
                 >
-                  <Link2 className="w-4 h-4" /> Paste URL
+                  <Link2 className="w-3.5 h-3.5 text-[#8d6b4f]" /> URL
                 </button>
               </div>
 
@@ -211,7 +214,7 @@ const AddProductForm = ({ form, setForm, handleUpload, handleAddProduct }: AddPr
                   <input
                     type="url"
                     placeholder="https://example.com/image.jpg"
-                    className="flex-1 bg-slate-900/50 border border-slate-700 p-3 rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition text-sm"
+                    className="flex-1 bg-[#faf7f2] border border-[#ede4d5] px-3 py-1.5 rounded-xl focus:border-[#2f4739] focus:outline-none transition text-xs text-[#1c1917]"
                     value={imageUrl}
                     onChange={(e) => setImageUrl(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleUrlSubmit()}
@@ -219,7 +222,7 @@ const AddProductForm = ({ form, setForm, handleUpload, handleAddProduct }: AddPr
                   <button
                     type="button"
                     onClick={handleUrlSubmit}
-                    className="bg-green-600 text-white px-4 rounded-xl hover:bg-green-700 transition font-medium"
+                    className="bg-[#2f4739] text-[#faf7f2] px-3.5 py-1.5 rounded-xl hover:bg-[#23372c] transition font-semibold text-xs"
                   >
                     Add
                   </button>
@@ -227,7 +230,7 @@ const AddProductForm = ({ form, setForm, handleUpload, handleAddProduct }: AddPr
               )}
 
               {uploadError && (
-                <p className="text-sm text-red-400">{uploadError}</p>
+                <p className="text-xs text-[#a74338]">{uploadError}</p>
               )}
             </div>
           )}
@@ -235,7 +238,7 @@ const AddProductForm = ({ form, setForm, handleUpload, handleAddProduct }: AddPr
 
         <button
           onClick={handleAddProduct}
-          className="w-full mt-6 bg-gradient-to-r from-green-600 to-emerald-600 text-white py-4 rounded-xl font-bold hover:from-green-700 hover:to-emerald-700 transition transform hover:scale-[1.02] shadow-xl"
+          className="w-full mt-4 bg-[#2f4739] hover:bg-[#23372c] text-[#faf7f2] py-3 rounded-full font-semibold shadow-sm transition text-xs"
         >
           Launch Product
         </button>

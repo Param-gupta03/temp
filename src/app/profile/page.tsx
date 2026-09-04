@@ -34,54 +34,53 @@ const ProfilePage = () => {
 
   return (
     <div className="max-w-xl mx-auto py-12 px-4">
-      <div className="bg-slate-800/40 rounded-[2.5rem] border border-slate-700 shadow-2xl overflow-hidden backdrop-blur-sm">
-        <div className="bg-gradient-to-br from-green-600 to-emerald-700 p-10 text-center text-white relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+      <div className="bg-white rounded-3xl border border-[#ede4d5] shadow-sm overflow-hidden">
+        <div className="bg-[#2f4739] p-8 md:p-10 text-center text-[#faf7f2] relative overflow-hidden">
           <div className="relative z-10">
-            <div className="inline-block p-5 bg-white/20 rounded-3xl backdrop-blur-md mb-6 border border-white/20">
-              <User size={48} className="text-white" />
+            <div className="inline-block p-4 bg-white/10 rounded-2xl backdrop-blur-md mb-4 border border-white/20">
+              <User size={40} className="text-[#faf7f2]" />
             </div>
-            <h2 className="text-3xl font-black mb-1">My Profile</h2>
-            <p className="text-white/80 font-medium">{user?.email}</p>
+            <h2 className="text-2xl md:text-3xl font-serif font-bold mb-1">My Profile</h2>
+            <p className="text-xs text-[#faf7f2]/80 font-medium">{user?.email}</p>
           </div>
         </div>
 
-        <form onSubmit={handleUpdate} className="p-8 md:p-12 space-y-8">
-          <div className="space-y-2">
-            <label className="flex items-center text-sm font-bold text-slate-400 ml-1">
-              <User size={16} className="mr-2 text-green-500" /> Full Name
+        <form onSubmit={handleUpdate} className="p-8 md:p-10 space-y-6">
+          <div className="space-y-1.5">
+            <label className="flex items-center text-xs font-semibold text-[#1c1917]">
+              <User size={14} className="mr-2 text-[#2f4739]" /> Full Name
             </label>
             <input
               type="text"
               value={formData.full_name}
               onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-              className="w-full p-4 bg-slate-900 border border-slate-700 rounded-2xl focus:ring-2 focus:ring-green-500 outline-none text-white transition"
+              className="w-full px-4 py-2.5 bg-[#faf7f2] border border-[#ede4d5] rounded-xl focus:border-[#2f4739] focus:outline-none text-[#1c1917] placeholder:text-[#a8a29e] transition text-sm"
               placeholder="Your full name"
             />
           </div>
 
-          <div className="space-y-2">
-            <label className="flex items-center text-sm font-bold text-slate-400 ml-1">
-              <Phone size={16} className="mr-2 text-green-500" /> Phone Number
+          <div className="space-y-1.5">
+            <label className="flex items-center text-xs font-semibold text-[#1c1917]">
+              <Phone size={14} className="mr-2 text-[#2f4739]" /> Phone Number
             </label>
             <input
               type="tel"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="w-full p-4 bg-slate-900 border border-slate-700 rounded-2xl focus:ring-2 focus:ring-green-500 outline-none text-white transition"
+              className="w-full px-4 py-2.5 bg-[#faf7f2] border border-[#ede4d5] rounded-xl focus:border-[#2f4739] focus:outline-none text-[#1c1917] placeholder:text-[#a8a29e] transition text-sm"
               placeholder="+91 XXXXX XXXXX"
             />
           </div>
 
-          <div className="space-y-2">
-            <label className="flex items-center text-sm font-bold text-slate-400 ml-1">
-              <MapPin size={16} className="mr-2 text-green-500" /> Delivery Address
+          <div className="space-y-1.5">
+            <label className="flex items-center text-xs font-semibold text-[#1c1917]">
+              <MapPin size={14} className="mr-2 text-[#2f4739]" /> Delivery Address
             </label>
             <textarea
               rows={3}
               value={formData.address}
               onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-              className="w-full p-4 bg-slate-900 border border-slate-700 rounded-2xl focus:ring-2 focus:ring-green-500 outline-none text-white transition resize-none"
+              className="w-full px-4 py-2.5 bg-[#faf7f2] border border-[#ede4d5] rounded-xl focus:border-[#2f4739] focus:outline-none text-[#1c1917] placeholder:text-[#a8a29e] transition resize-none text-sm"
               placeholder="Where should we send your eco-friendly items?"
             />
           </div>
@@ -89,12 +88,12 @@ const ProfilePage = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-5 rounded-2xl font-black shadow-xl shadow-green-900/20 hover:from-green-700 hover:to-emerald-700 transition transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center space-x-3 text-lg"
+            className="w-full bg-[#2f4739] text-[#faf7f2] py-3.5 rounded-full font-semibold shadow-sm hover:bg-[#23372c] transition flex items-center justify-center space-x-2 text-sm"
           >
             {loading ? (
-              <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              <div className="w-5 h-5 border-2 border-[#faf7f2]/30 border-t-[#faf7f2] rounded-full animate-spin"></div>
             ) : (
-              <><Save size={20} /> <span>Save Changes</span></>
+              <><Save size={18} /> <span>Save Changes</span></>
             )}
           </button>
         </form>

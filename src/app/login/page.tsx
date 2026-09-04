@@ -76,40 +76,43 @@ const LoginPage = () => {
 
   return (
     <section className="py-12 px-4">
-      <div className="bg-slate-800/40 border border-slate-700 rounded-[2.5rem] p-8 md:p-12 max-w-lg mx-auto shadow-2xl backdrop-blur-sm">
-        <h2 className="text-4xl font-black text-white text-center mb-10">
-          Login to <span className="text-green-500">The Green Turtles</span>
-        </h2>
+      <div className="bg-white border border-[#ede4d5] rounded-3xl p-8 md:p-10 max-w-md mx-auto shadow-sm">
+        <div className="text-center mb-8 space-y-1">
+          <span className="text-xs uppercase tracking-wider text-[#8d6b4f] font-semibold">Welcome Back</span>
+          <h2 className="text-3xl font-serif font-bold text-[#1c1917]">
+            Login to <span className="text-[#2f4739]">The Green Turtles</span>
+          </h2>
+        </div>
 
-        <form onSubmit={handleLogin} className="space-y-6">
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-400 ml-1">Email Address</label>
+        <form onSubmit={handleLogin} className="space-y-5">
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-[#1c1917]">Email Address</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-700 px-5 py-4 rounded-2xl focus:ring-2 focus:ring-green-500 outline-none text-white transition"
+              className="w-full bg-[#faf7f2] border border-[#ede4d5] px-4 py-3 rounded-xl focus:border-[#2f4739] focus:outline-none text-[#1c1917] placeholder:text-[#a8a29e] transition text-sm"
               placeholder="name@example.com"
               required
             />
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-400 ml-1">Password</label>
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-[#1c1917]">Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-700 px-5 py-4 rounded-2xl focus:ring-2 focus:ring-green-500 outline-none text-white transition"
+              className="w-full bg-[#faf7f2] border border-[#ede4d5] px-4 py-3 rounded-xl focus:border-[#2f4739] focus:outline-none text-[#1c1917] placeholder:text-[#a8a29e] transition text-sm"
               placeholder="••••••••"
               required
             />
 
-            <div className="text-right mt-2">
+            <div className="text-right mt-1.5">
               <button
                 type="button"
                 onClick={toggleForgotPassword}
-                className="text-sm text-slate-500 hover:text-green-500 transition font-bold"
+                className="text-xs text-[#8d6b4f] hover:text-[#2f4739] transition font-medium"
               >
                 Forgot Password?
               </button>
@@ -117,10 +120,10 @@ const LoginPage = () => {
           </div>
 
           {showForgotPassword && (
-            <div className="rounded-2xl border border-green-500/20 bg-green-500/5 p-6 space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
+            <div className="rounded-2xl border border-[#ede4d5] bg-[#f7f4ee] p-5 space-y-3 animate-in fade-in slide-in-from-top-4 duration-300">
               <div>
-                <h3 className="text-lg font-bold text-green-400">Reset Password</h3>
-                <p className="text-sm text-slate-400 mt-1">
+                <h3 className="text-sm font-serif font-bold text-[#1c1917]">Reset Password</h3>
+                <p className="text-xs text-[#66615b] mt-0.5">
                   Enter your email and we'll send you a recovery link.
                 </p>
               </div>
@@ -129,16 +132,16 @@ const LoginPage = () => {
                 type="email"
                 value={resetEmail}
                 onChange={(e) => setResetEmail(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 px-5 py-3 rounded-xl focus:ring-2 focus:ring-green-500 outline-none text-white transition"
+                className="w-full bg-white border border-[#ede4d5] px-4 py-2.5 rounded-xl focus:border-[#2f4739] focus:outline-none text-[#1c1917] placeholder:text-[#a8a29e] transition text-sm"
                 placeholder="your.email@example.com"
               />
 
-              <div className="flex gap-4 pt-2">
+              <div className="flex gap-3 pt-1">
                 <button
                   type="button"
                   onClick={handleForgotPassword}
                   disabled={isSendingReset}
-                  className="flex-[2] bg-green-600 text-white font-bold py-3 px-4 rounded-xl hover:bg-green-700 transition disabled:opacity-70"
+                  className="flex-[2] bg-[#2f4739] text-[#faf7f2] font-semibold py-2 px-4 rounded-full hover:bg-[#23372c] transition disabled:opacity-70 text-xs shadow-xs"
                 >
                   {isSendingReset ? 'Sending...' : 'Send Link'}
                 </button>
@@ -146,7 +149,7 @@ const LoginPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowForgotPassword(false)}
-                  className="flex-1 border border-slate-700 text-slate-400 font-bold py-3 px-4 rounded-xl hover:bg-slate-700 transition"
+                  className="flex-1 border border-[#ede4d5] bg-white text-[#66615b] font-medium py-2 px-4 rounded-full hover:bg-[#f7f4ee] transition text-xs"
                 >
                   Cancel
                 </button>
@@ -156,17 +159,17 @@ const LoginPage = () => {
 
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white font-black py-5 px-6 rounded-2xl hover:from-green-700 hover:to-emerald-700 transition transform hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-green-900/20"
+            className="w-full bg-[#2f4739] text-[#faf7f2] font-semibold py-3.5 px-6 rounded-full hover:bg-[#23372c] transition shadow-sm text-sm"
           >
             Login
           </button>
         </form>
 
-        <p className="text-center text-slate-400 mt-8 font-medium">
+        <p className="text-center text-[#66615b] mt-6 text-xs font-medium">
           Don't have an account?{' '}
           <button
             onClick={() => router.push('/register')}
-            className="text-green-500 hover:text-green-400 font-black"
+            className="text-[#2f4739] hover:underline font-semibold"
           >
             Join now
           </button>

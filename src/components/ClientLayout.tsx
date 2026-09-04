@@ -16,7 +16,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   const useFullWidth = isComingSoonPage || isLandingPage;
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-900 text-slate-100 selection:bg-green-500/30">
+    <div className="min-h-screen flex flex-col bg-[#faf7f2] text-[#1c1917] selection:bg-[#2f4739]/15 selection:text-[#2f4739]">
       {showHeaderFooter && <Header isSubscriptionPage={isSubscriptionPage} />}
       <main className={`flex-grow ${useFullWidth ? "" : "container mx-auto px-4 py-8"}`}>
         {children}
@@ -24,12 +24,12 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       {showHeaderFooter && <Footer />}
 
       {showMessageModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 animate-in fade-in duration-300">
-          <div className="bg-slate-800 border border-slate-700 px-8 py-6 rounded-2xl shadow-2xl max-w-sm w-full text-center">
-            <p className="text-lg font-medium text-slate-100">{message}</p>
+        <div className="fixed inset-0 flex items-center justify-center bg-[#1c1917]/40 backdrop-blur-sm z-50 animate-in fade-in duration-300">
+          <div className="bg-[#ffffff] border border-[#e7e0d5] px-8 py-7 rounded-3xl shadow-[0_20px_50px_rgba(47,71,57,0.12)] max-w-sm w-full text-center">
+            <p className="text-base font-medium text-[#1c1917]">{message}</p>
             <button
               onClick={() => setShowMessageModal(false)}
-              className="mt-6 w-full bg-green-600 text-white font-bold py-2 rounded-xl hover:bg-green-700 transition"
+              className="mt-6 w-full bg-[#2f4739] hover:bg-[#24372c] text-[#faf7f2] font-semibold py-3 rounded-full transition shadow-sm active:scale-[0.98]"
             >
               Okay
             </button>

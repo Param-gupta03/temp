@@ -108,14 +108,14 @@ const SellerDashboard = () => {
 
   if (!canAccessDashboard) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh] text-red-400 font-bold text-2xl animate-pulse">
+      <div className="flex items-center justify-center min-h-[60vh] text-[#a74338] font-semibold text-lg">
         Access Denied - Authorized Sellers Only
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12 text-slate-100">
+    <div className="max-w-7xl mx-auto px-4 py-12 text-[#1c1917]">
       <DashboardHeader productCount={products.length} walletBalance={walletBalance} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">

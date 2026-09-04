@@ -84,21 +84,20 @@ const PartnerPage = () => {
     return (
         <section className="py-12 px-4 max-w-7xl mx-auto space-y-16">
             {/* Header Section / For Brands */}
-            <div className="relative overflow-hidden bg-slate-800/40 rounded-[3rem] border border-slate-700 p-8 md:p-16 shadow-xl backdrop-blur-sm">
-                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-500 to-emerald-600"></div>
+            <div className="relative overflow-hidden bg-[#f7f4ee] rounded-3xl border border-[#ede4d5] p-8 md:p-14 shadow-sm">
                 <div className="text-center max-w-4xl mx-auto space-y-6">
-                    <div className="inline-flex items-center gap-2 bg-green-500/10 px-4 py-2 rounded-xl border border-green-500/20 text-green-400 font-bold text-sm uppercase tracking-widest">
+                    <div className="inline-flex items-center gap-2 bg-[#ede4d5]/60 px-3.5 py-1.5 rounded-full border border-[#cfc4b2]/60 text-[#8d6b4f] font-semibold text-xs uppercase tracking-widest">
                         FOR BRANDS
                     </div>
-                    <h1 className="text-4xl md:text-6xl font-black text-white">
+                    <h1 className="text-3xl md:text-5xl font-serif font-bold text-[#1c1917] leading-tight">
                         Have a sustainable product worth discovering?
                     </h1>
-                    <p className="text-lg md:text-xl text-slate-300 leading-relaxed max-w-3xl mx-auto">
+                    <p className="text-base md:text-lg text-[#66615b] leading-relaxed max-w-3xl mx-auto">
                         The Green Turtles gives brands a structured place to showcase their products, sustainability information and story to consumers looking for better alternatives.
                     </p>
-                    <div className="flex flex-wrap justify-center gap-4 pt-4 text-sm md:text-base font-bold text-green-400">
+                    <div className="flex flex-wrap justify-center gap-3 pt-2 text-sm font-medium text-[#2f4739]">
                         {["Discoverability", "Visibility", "Consumer Insights", "Sustainability Story"].map((tag, idx) => (
-                            <span key={idx} className="bg-slate-900 border border-slate-800 px-4 py-2 rounded-full shadow-inner">
+                            <span key={idx} className="bg-white border border-[#ede4d5] px-4 py-1.5 rounded-full shadow-xs">
                                 • {tag}
                             </span>
                         ))}
@@ -114,8 +113,11 @@ const PartnerPage = () => {
                     
                     {/* Why Partner Section */}
                     <div className="space-y-6">
-                        <h2 className="text-3xl font-black text-white">Why Partner With Us?</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-1">
+                            <span className="text-xs uppercase tracking-wider text-[#8d6b4f] font-semibold">Value Proposition</span>
+                            <h2 className="text-2xl md:text-3xl font-serif font-bold text-[#1c1917]">Why Partner With Us?</h2>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                             {[
                                 { icon: Share2, title: "Reach", desc: "Get discovered by consumers looking for sustainable alternatives." },
                                 { icon: Eye, title: "Visibility", desc: "Give your products a dedicated, structured presence on the platform." },
@@ -124,13 +126,13 @@ const PartnerPage = () => {
                             ].map((item, idx) => {
                                 const Icon = item.icon;
                                 return (
-                                    <div key={idx} className="bg-slate-900/30 border border-slate-850 p-6 rounded-2xl flex gap-4">
-                                        <div className="p-3 bg-green-500/10 border border-green-500/20 text-green-400 rounded-xl shrink-0 h-fit">
+                                    <div key={idx} className="bg-white border border-[#ede4d5] p-6 rounded-2xl flex gap-4 shadow-sm">
+                                        <div className="p-3 bg-[#f7f4ee] border border-[#ede4d5] text-[#2f4739] rounded-xl shrink-0 h-fit">
                                             <Icon className="w-5 h-5" />
                                         </div>
                                         <div>
-                                            <h4 className="font-bold text-white text-lg mb-1">{item.title}</h4>
-                                            <p className="text-sm text-slate-400 leading-relaxed">{item.desc}</p>
+                                            <h4 className="font-serif font-bold text-[#1c1917] text-base mb-1">{item.title}</h4>
+                                            <p className="text-xs text-[#66615b] leading-relaxed">{item.desc}</p>
                                         </div>
                                     </div>
                                 );
@@ -140,8 +142,11 @@ const PartnerPage = () => {
 
                     {/* How It Works Section */}
                     <div className="space-y-6">
-                        <h2 className="text-3xl font-black text-white">How It Works</h2>
-                        <div className="relative border-l-2 border-slate-800 pl-6 space-y-8 ml-3">
+                        <div className="space-y-1">
+                            <span className="text-xs uppercase tracking-wider text-[#8d6b4f] font-semibold">Process</span>
+                            <h2 className="text-2xl md:text-3xl font-serif font-bold text-[#1c1917]">How It Works</h2>
+                        </div>
+                        <div className="relative border-l-2 border-[#ede4d5] pl-6 space-y-7 ml-3">
                             {[
                                 { step: "01", title: "Share", desc: "Your brand and product details" },
                                 { step: "02", title: "Review", desc: "Product information and sustainability credentials" },
@@ -150,26 +155,26 @@ const PartnerPage = () => {
                             ].map((item, idx) => (
                                 <div key={idx} className="relative">
                                     {/* Timeline dot */}
-                                    <div className="absolute -left-[35px] top-1 w-4 h-4 bg-green-500 rounded-full border-4 border-slate-950"></div>
+                                    <div className="absolute -left-[31px] top-1 w-3.5 h-3.5 bg-[#2f4739] rounded-full border-2 border-[#faf7f2]"></div>
                                     <div className="flex items-center gap-3">
-                                        <span className="text-xs font-black text-green-400 bg-green-500/10 px-2 py-1 rounded border border-green-500/20 font-mono">{item.step}</span>
-                                        <h4 className="text-lg font-bold text-white">{item.title}</h4>
+                                        <span className="text-xs font-semibold text-[#2f4739] bg-[#f7f4ee] px-2.5 py-0.5 rounded-full border border-[#ede4d5]">{item.step}</span>
+                                        <h4 className="text-base font-serif font-bold text-[#1c1917]">{item.title}</h4>
                                     </div>
-                                    <p className="text-slate-400 text-sm mt-1">{item.desc}</p>
+                                    <p className="text-[#66615b] text-xs mt-1">{item.desc}</p>
                                 </div>
                             ))}
                         </div>
                     </div>
 
                     {/* Trust-First Approach */}
-                    <div className="bg-slate-900/30 border border-slate-800 p-8 rounded-3xl space-y-6">
-                        <h2 className="text-2xl font-black text-white flex items-center gap-2">
-                            <ShieldCheck className="text-green-500 w-6 h-6" /> A Trust-First Approach
+                    <div className="bg-[#f7f4ee] border border-[#ede4d5] p-8 rounded-2xl space-y-5">
+                        <h2 className="text-xl font-serif font-bold text-[#1c1917] flex items-center gap-2">
+                            <ShieldCheck className="text-[#2f4739] w-5 h-5" /> A Trust-First Approach
                         </h2>
-                        <p className="text-slate-300 leading-relaxed text-sm">
-                            We believe sustainability should be <strong className="text-white">demonstrated, not simply claimed</strong>. The Green Turtles aims to make product information more transparent by considering:
+                        <p className="text-[#66615b] leading-relaxed text-sm">
+                            We believe sustainability should be <strong className="text-[#1c1917]">demonstrated, not simply claimed</strong>. The Green Turtles aims to make product information more transparent by considering:
                         </p>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-medium text-slate-400">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-medium text-[#66615b]">
                             {[
                                 "Sustainability-related certifications",
                                 "Product composition and materials",
@@ -179,12 +184,12 @@ const PartnerPage = () => {
                                 "A defined product-validation framework"
                             ].map((bullet, idx) => (
                                 <div key={idx} className="flex items-center gap-2">
-                                    <CheckCircle2 className="text-green-500 w-4 h-4 shrink-0" />
+                                    <CheckCircle2 className="text-[#2f4739] w-4 h-4 shrink-0" />
                                     <span>{bullet}</span>
                                 </div>
                             ))}
                         </div>
-                        <p className="text-slate-400 text-xs italic border-t border-slate-800 pt-4">
+                        <p className="text-[#66615b] text-xs italic border-t border-[#ede4d5] pt-4">
                             Consumers will be able to understand <strong>why a product is considered sustainable</strong>, rather than relying solely on marketing claims.
                         </p>
                     </div>
@@ -192,73 +197,72 @@ const PartnerPage = () => {
                 </div>
 
                 {/* Form Column (Right) */}
-                <div className="lg:col-span-5 bg-slate-800/40 border border-slate-700 rounded-[3rem] p-8 md:p-10 shadow-2xl backdrop-blur-sm relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-green-500 to-emerald-600"></div>
-                    
-                    <div className="space-y-4 mb-8">
-                        <h2 className="text-2xl md:text-3xl font-black text-white">
+                <div className="lg:col-span-5 bg-white border border-[#ede4d5] rounded-3xl p-8 md:p-10 shadow-sm">
+                    <div className="space-y-3 mb-8">
+                        <span className="text-xs uppercase tracking-wider text-[#8d6b4f] font-semibold">Join the Collective</span>
+                        <h2 className="text-2xl md:text-3xl font-serif font-bold text-[#1c1917]">
                             Become an Early Partner
                         </h2>
-                        <p className="text-sm text-slate-400">
+                        <p className="text-xs text-[#66615b] leading-relaxed">
                             Interested in joining our platform? Share your details and let's work together to make sustainable products easier to choose.
                         </p>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="space-y-2">
-                            <label className="text-xs font-bold text-slate-400 ml-1">Your Name / Contact Person</label>
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-[#1c1917]">Your Name / Contact Person</label>
                             <input
                                 type="text"
                                 name="contact_name"
                                 value={formData.contact_name}
                                 onChange={handleChange}
-                                className="w-full bg-slate-900 border border-slate-750 px-4 py-3 text-sm rounded-xl focus:ring-2 focus:ring-green-500 outline-none text-white transition"
+                                className="w-full bg-[#faf7f2] border border-[#ede4d5] px-4 py-2.5 text-sm rounded-xl focus:border-[#2f4739] focus:outline-none text-[#1c1917] placeholder:text-[#a8a29e] transition"
                                 placeholder="Contact Name"
                                 required
                             />
                         </div>
 
-                        <div className="space-y-2">
-                            <label className="text-xs font-bold text-slate-400 ml-1">Email Address</label>
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-[#1c1917]">Email Address</label>
                             <div className="relative">
-                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4" />
+                                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8d6b4f] w-4 h-4" />
                                 <input
                                     type="email"
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    className="w-full bg-slate-900 border border-slate-750 px-4 py-3 pl-11 text-sm rounded-xl focus:ring-2 focus:ring-green-500 outline-none text-white transition"
+                                    className="w-full bg-[#faf7f2] border border-[#ede4d5] px-4 py-2.5 pl-10 text-sm rounded-xl focus:border-[#2f4739] focus:outline-none text-[#1c1917] placeholder:text-[#a8a29e] transition"
                                     placeholder="your@email.com"
                                     required
                                 />
                             </div>
                         </div>
 
-                        <div className="space-y-2">
-                            <label className="text-xs font-bold text-slate-400 ml-1">Phone Number (Optional)</label>
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-[#1c1917]">Phone Number (Optional)</label>
                             <div className="relative">
-                                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4" />
+                                <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8d6b4f] w-4 h-4" />
                                 <input
                                     type="tel"
                                     name="phone"
                                     value={formData.phone}
                                     onChange={handleChange}
-                                    className="w-full bg-slate-900 border border-slate-750 px-4 py-3 pl-11 text-sm rounded-xl focus:ring-2 focus:ring-green-500 outline-none text-white transition"
+                                    className="w-full bg-[#faf7f2] border border-[#ede4d5] px-4 py-2.5 pl-10 text-sm rounded-xl focus:border-[#2f4739] focus:outline-none text-[#1c1917] placeholder:text-[#a8a29e] transition"
                                     placeholder="+91 XXXXX XXXXX"
                                 />
                             </div>
                         </div>
 
-                        <div className="space-y-2">
-                            <label className="text-xs font-bold text-slate-400 ml-1">Brand Name & Proposal Details</label>
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-[#1c1917]">Brand Name & Proposal Details</label>
                             <div className="relative">
-                                <MessageSquare className="absolute left-4 top-3 text-slate-500 w-4 h-4" />
+                                <MessageSquare className="absolute left-3.5 top-3 text-[#8d6b4f] w-4 h-4" />
                                 <textarea
                                     name="message"
                                     rows={4}
                                     value={formData.message}
                                     onChange={handleChange}
-                                    className="w-full bg-slate-900 border border-slate-750 px-4 py-3 pl-11 text-sm rounded-xl focus:ring-2 focus:ring-green-500 outline-none text-white transition resize-none"
+                                    className="w-full bg-[#faf7f2] border border-[#ede4d5] px-4 py-2.5 pl-10 text-sm rounded-xl focus:border-[#2f4739] focus:outline-none text-[#1c1917] placeholder:text-[#a8a29e] transition resize-none"
                                     placeholder="Tell us about your brand and products..."
                                 />
                             </div>
@@ -266,25 +270,25 @@ const PartnerPage = () => {
 
                         <button
                             type="submit"
-                            className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white font-black py-4 px-6 rounded-xl hover:from-green-700 hover:to-emerald-700 transition transform hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-green-900/10 text-sm"
+                            className="w-full bg-[#2f4739] text-[#faf7f2] font-semibold py-3 px-6 rounded-full hover:bg-[#23372c] transition text-sm shadow-sm"
                         >
                             Submit Partnership Inquiry
                         </button>
                     </form>
 
                     {/* Direct Contact Details Block */}
-                    <div className="mt-8 pt-8 border-t border-slate-700/60 space-y-4 text-xs font-medium text-slate-400">
+                    <div className="mt-8 pt-6 border-t border-[#ede4d5] space-y-3 text-xs font-medium text-[#66615b]">
                         <div className="flex items-center gap-3">
-                            <Mail className="w-4 h-4 text-green-500 shrink-0" />
-                            <span>Contact: <a href="mailto:dishasikka@thegreenturtles.in" className="text-green-400 hover:underline">dishasikka@thegreenturtles.in</a></span>
+                            <Mail className="w-4 h-4 text-[#2f4739] shrink-0" />
+                            <span>Contact: <a href="mailto:dishasikka@thegreenturtles.in" className="text-[#2f4739] font-semibold hover:underline">dishasikka@thegreenturtles.in</a></span>
                         </div>
                         <div className="flex items-center gap-3">
-                            <Globe className="w-4 h-4 text-green-500 shrink-0" />
-                            <span>Website: <a href="https://thegreenturtles.in" target="_blank" rel="noopener noreferrer" className="text-green-400 hover:underline">thegreenturtles.in</a></span>
+                            <Globe className="w-4 h-4 text-[#2f4739] shrink-0" />
+                            <span>Website: <a href="https://thegreenturtles.in" target="_blank" rel="noopener noreferrer" className="text-[#2f4739] font-semibold hover:underline">thegreenturtles.in</a></span>
                         </div>
                         <div className="flex items-center gap-3">
-                            <Instagram className="w-4 h-4 text-green-500 shrink-0" />
-                            <span>Instagram: <a href="https://instagram.com/thegreenturtles.in" target="_blank" rel="noopener noreferrer" className="text-green-400 hover:underline">@thegreenturtles.in</a></span>
+                            <Instagram className="w-4 h-4 text-[#2f4739] shrink-0" />
+                            <span>Instagram: <a href="https://instagram.com/thegreenturtles.in" target="_blank" rel="noopener noreferrer" className="text-[#2f4739] font-semibold hover:underline">@thegreenturtles.in</a></span>
                         </div>
                     </div>
                 </div>
@@ -292,13 +296,13 @@ const PartnerPage = () => {
             </div>
 
             {/* Bottom Slogan Section */}
-            <div className="bg-gradient-to-br from-green-900/20 to-emerald-950/20 border border-green-900/30 rounded-[3rem] p-8 md:p-12 text-center space-y-4">
-                <h3 className="text-2xl md:text-3xl font-black text-white">Let's Make Sustainable Products Easier to Choose.</h3>
-                <p className="text-slate-400 max-w-2xl mx-auto text-sm font-medium">
+            <div className="bg-[#f7f4ee] border border-[#ede4d5] rounded-3xl p-8 md:p-12 text-center space-y-3">
+                <h3 className="text-2xl md:text-3xl font-serif font-bold text-[#1c1917]">Let's Make Sustainable Products Easier to Choose.</h3>
+                <p className="text-[#66615b] max-w-2xl mx-auto text-sm">
                     We would love to learn about your brand, understand your products and explore how we can help more consumers discover them.
                 </p>
-                <div className="font-bold text-green-400 tracking-wider text-sm font-mono">
-                    the green turtles · Discover. Compare. Choose Better.
+                <div className="text-xs uppercase tracking-wider text-[#8d6b4f] font-semibold pt-2">
+                    The Green Turtles · Discover. Compare. Choose Better.
                 </div>
             </div>
         </section>
