@@ -2,11 +2,13 @@
 
 import React, { useState, useContext } from 'react';
 import { useRouter } from 'next/navigation';
-
+import Link from 'next/link';
+import { ArrowRight, ShoppingBag, Store } from 'lucide-react';
+import SvgLogo from '@/svg';
 import { AppContext } from '@/context/AppContext';
 
 const RegisterPage = () => {
-  const { registerUser, showMessage }: any = useContext(AppContext);
+  const { registerUser, showMessage }: any = useContext(AppContext) || {};
   const router = useRouter();
 
   const [email, setEmail] = useState('');
@@ -15,6 +17,7 @@ const RegisterPage = () => {
   const [gstNo, setGstNo] = useState('');
   const [shopLocation, setShopLocation] = useState('');
   const [shopName, setShopName] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,74 +26,105 @@ const RegisterPage = () => {
       email,
       password,
       nextRole: role,
-      metadata: role === 'seller' ? {
-        gst_no: gstNo,
-        shop_location: shopLocation,
-        shop_name: shopName
-      } : {}
+      metadata:
+        role === 'seller'
+          ? {
+              gst_no: gstNo,
+              shop_location: shopLocation,
+              shop_name: shopName,
+            }
+          : {},
     };
 
+    setLoading(true);
     const { error, mode } = await registerUser(registrationData);
+    setLoading(false);
 
     if (error) {
-      showMessage(error.message);
+      showMessage?.(error.message);
       return;
     }
 
-    showMessage(
+    showMessage?.(
       mode === 'local'
-        ? 'Demo account ready. You can start shopping now.'
+        ? 'Demo account created! Welcome.'
         : 'Registered successfully!'
     );
-    router.push(role === 'seller' || role === 'admin' ? '/seller-dashboard' : '/landing');
+
+    if (role === 'seller') {
+      router.push('/seller-home');
+    } else {
+      router.push('/home');
+    }
   };
 
   return (
-    <section className="py-12 px-4">
-      <div className="max-w-md mx-auto p-8 md:p-10 bg-white text-[#1c1917] rounded-3xl shadow-sm border border-[#ede4d5]">
-        <div className="text-center mb-6 space-y-1">
-          <span className="text-xs uppercase tracking-wider text-[#8d6b4f] font-semibold">Join the Movement</span>
-          <h2 className="text-3xl font-serif font-bold text-[#1c1917]">
-            Join <span className="text-[#2f4739]">The Green Turtles</span>
-          </h2>
+    <section className="py-16 px-4 max-w-lg mx-auto text-[#111827] dark:text-[#f4f0ea]">
+      <div className="bg-white dark:bg-[#1a241f] border-2 border-[#e7e0d5] dark:border-[#2a3d33] rounded-[2.5rem] p-8 md:p-12 shadow-card space-y-8">
+        <div className="text-center space-y-3">
+          <div className="flex justify-center">
+            <SvgLogo className="w-14 h-14 bg-transparent" />
+          </div>
+          <span className="text-xs uppercase tracking-widest text-[#8d6b4f] dark:text-[#d4a373] font-bold">
+            Join The Movement
+          </span>
+          <h1 className="text-3xl sm:text-4xl font-serif font-bold">
+            Join <span className="text-[#2f4739] dark:text-[#489a69]">The Green Turtles</span>
+          </h1>
+          <p className="text-sm text-[#4b5563] dark:text-[#9ca3af]">
+            Select your account type to get started.
+          </p>
         </div>
 
-        <div className="flex justify-center gap-3 mb-8">
+        {/* Role Toggle */}
+        <div className="flex bg-[#f7f4ee] dark:bg-[#121815] p-1.5 rounded-full border border-[#ede4d5] dark:border-[#2a3d33]">
           <button
             type="button"
             onClick={() => setRole('buyer')}
-            className={`px-5 py-2 rounded-full text-xs font-semibold transition ${role === 'buyer' ? 'bg-[#2f4739] text-[#faf7f2] shadow-xs' : 'bg-[#f7f4ee] border border-[#ede4d5] text-[#66615b] hover:bg-[#ede4d5]/60'}`}
+            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-sm font-bold transition ${
+              role === 'buyer'
+                ? 'bg-[#2f4739] text-[#faf7f2] shadow-xs'
+                : 'text-[#4b5563] dark:text-[#9ca3af] hover:text-[#111827] dark:hover:text-[#f4f0ea]'
+            }`}
           >
-            Buyer
+            <ShoppingBag className="w-4 h-4" /> As a Buyer
           </button>
           <button
             type="button"
             onClick={() => setRole('seller')}
-            className={`px-5 py-2 rounded-full text-xs font-semibold transition ${role === 'seller' ? 'bg-[#2f4739] text-[#faf7f2] shadow-xs' : 'bg-[#f7f4ee] border border-[#ede4d5] text-[#66615b] hover:bg-[#ede4d5]/60'}`}
+            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-sm font-bold transition ${
+              role === 'seller'
+                ? 'bg-[#2f4739] text-[#faf7f2] shadow-xs'
+                : 'text-[#4b5563] dark:text-[#9ca3af] hover:text-[#111827] dark:hover:text-[#f4f0ea]'
+            }`}
           >
-            Seller
+            <Store className="w-4 h-4" /> As a Seller
           </button>
         </div>
 
-        <form onSubmit={handleRegister} className="space-y-4">
-          <div>
-            <label className="block text-xs font-semibold mb-1 text-[#1c1917]">Email Address</label>
+        <form onSubmit={handleRegister} className="space-y-5">
+          <div className="space-y-1.5">
+            <label className="text-sm font-semibold text-[#111827] dark:text-[#f4f0ea]">
+              Email Address *
+            </label>
             <input
               type="email"
-              placeholder="name@company.com"
-              className="w-full bg-[#faf7f2] border border-[#ede4d5] px-4 py-2.5 rounded-xl focus:border-[#2f4739] focus:outline-none text-[#1c1917] placeholder:text-[#a8a29e] transition text-sm"
+              placeholder="name@example.com"
+              className="w-full bg-[#faf7f2] dark:bg-[#121815] border border-[#e7e0d5] dark:border-[#2a3d33] px-4 py-3 rounded-xl focus:border-[#2f4739] focus:outline-none text-[#111827] dark:text-[#f4f0ea] placeholder:text-[#9ca3af] transition text-sm font-medium"
               onChange={(e) => setEmail(e.target.value)}
               value={email}
               required
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold mb-1 text-[#1c1917]">Password</label>
+          <div className="space-y-1.5">
+            <label className="text-sm font-semibold text-[#111827] dark:text-[#f4f0ea]">
+              Password *
+            </label>
             <input
               type="password"
               placeholder="••••••••"
-              className="w-full bg-[#faf7f2] border border-[#ede4d5] px-4 py-2.5 rounded-xl focus:border-[#2f4739] focus:outline-none text-[#1c1917] placeholder:text-[#a8a29e] transition text-sm"
+              className="w-full bg-[#faf7f2] dark:bg-[#121815] border border-[#e7e0d5] dark:border-[#2a3d33] px-4 py-3 rounded-xl focus:border-[#2f4739] focus:outline-none text-[#111827] dark:text-[#f4f0ea] placeholder:text-[#9ca3af] transition text-sm font-medium"
               onChange={(e) => setPassword(e.target.value)}
               value={password}
               required
@@ -98,34 +132,42 @@ const RegisterPage = () => {
           </div>
 
           {role === 'seller' && (
-            <div className="space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
-              <div>
-                <label className="block text-xs font-semibold mb-1 text-[#1c1917]">Shop Name</label>
+            <div className="space-y-4 pt-2 border-t border-[#e7e0d5] dark:border-[#2a3d33] animate-in fade-in duration-300">
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-[#111827] dark:text-[#f4f0ea]">
+                  Shop or Brand Name *
+                </label>
                 <input
                   type="text"
-                  placeholder="Turtle's Green Shop"
-                  className="w-full bg-[#faf7f2] border border-[#ede4d5] px-4 py-2.5 rounded-xl focus:border-[#2f4739] focus:outline-none text-[#1c1917] placeholder:text-[#a8a29e] transition text-sm"
+                  placeholder="e.g. EcoCraft Studios"
+                  className="w-full bg-[#faf7f2] dark:bg-[#121815] border border-[#e7e0d5] dark:border-[#2a3d33] px-4 py-3 rounded-xl focus:border-[#2f4739] focus:outline-none text-[#111827] dark:text-[#f4f0ea] placeholder:text-[#9ca3af] transition text-sm font-medium"
                   onChange={(e) => setShopName(e.target.value)}
                   value={shopName}
                   required
                 />
               </div>
-              <div>
-                <label className="block text-xs font-semibold mb-1 text-[#1c1917]">GST Number</label>
+
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-[#111827] dark:text-[#f4f0ea]">
+                  GST Number or Artisan ID *
+                </label>
                 <input
                   type="text"
                   placeholder="22AAAAA0000A1Z5"
-                  className="w-full bg-[#faf7f2] border border-[#ede4d5] px-4 py-2.5 rounded-xl focus:border-[#2f4739] focus:outline-none text-[#1c1917] placeholder:text-[#a8a29e] transition uppercase text-sm"
+                  className="w-full bg-[#faf7f2] dark:bg-[#121815] border border-[#e7e0d5] dark:border-[#2a3d33] px-4 py-3 rounded-xl focus:border-[#2f4739] focus:outline-none text-[#111827] dark:text-[#f4f0ea] placeholder:text-[#9ca3af] transition uppercase text-sm font-medium"
                   onChange={(e) => setGstNo(e.target.value)}
                   value={gstNo}
                   required
                 />
               </div>
-              <div>
-                <label className="block text-xs font-semibold mb-1 text-[#1c1917]">Shop Location / Address</label>
+
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-[#111827] dark:text-[#f4f0ea]">
+                  Shop Location / Address *
+                </label>
                 <textarea
-                  placeholder="Full address of your shop"
-                  className="w-full bg-[#faf7f2] border border-[#ede4d5] px-4 py-2.5 rounded-xl focus:border-[#2f4739] focus:outline-none text-[#1c1917] placeholder:text-[#a8a29e] transition h-20 text-sm resize-none"
+                  placeholder="Full operating address of your sustainable brand"
+                  className="w-full bg-[#faf7f2] dark:bg-[#121815] border border-[#e7e0d5] dark:border-[#2a3d33] px-4 py-3 rounded-xl focus:border-[#2f4739] focus:outline-none text-[#111827] dark:text-[#f4f0ea] placeholder:text-[#9ca3af] transition text-sm font-medium h-24 resize-none"
                   onChange={(e) => setShopLocation(e.target.value)}
                   value={shopLocation}
                   required
@@ -134,21 +176,27 @@ const RegisterPage = () => {
             </div>
           )}
 
-          <button className="w-full bg-[#2f4739] text-[#faf7f2] font-semibold py-3 rounded-full hover:bg-[#23372c] transition shadow-sm text-sm mt-2">
-            Create Account
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-[#2f4739] hover:bg-[#23372c] dark:bg-[#346244] dark:hover:bg-[#3e7552] text-[#faf7f2] font-semibold py-4 rounded-full transition shadow-soft text-base flex items-center justify-center gap-2 active:scale-95"
+          >
+            {loading ? 'Creating Account...' : 'Create Account'}
+            <ArrowRight className="w-4 h-4" />
           </button>
         </form>
 
-        <p className="text-center text-[#66615b] mt-6 text-xs font-medium">
-          Already have an account?{' '}
-          <button
-            onClick={() => router.push('/login')}
-            className="text-[#2f4739] hover:underline font-semibold"
-          >
-            Login
-          </button>
-        </p>
-
+        <div className="text-center pt-2 border-t border-[#e7e0d5] dark:border-[#2a3d33]">
+          <p className="text-sm text-[#4b5563] dark:text-[#9ca3af]">
+            Already have an account?{' '}
+            <Link
+              href="/login"
+              className="text-[#2f4739] dark:text-[#489a69] font-bold hover:underline"
+            >
+              Login here
+            </Link>
+          </p>
+        </div>
       </div>
     </section>
   );

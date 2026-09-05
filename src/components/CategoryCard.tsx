@@ -10,12 +10,12 @@ interface CategoryCardProps {
 const CategoryCard = ({ name, icon, onClick }: CategoryCardProps) => (
   <button
     onClick={onClick}
-    className="group bg-white border border-[#e7e0d5] p-7 rounded-2xl hover:border-[#cfc4b2] hover:shadow-[0_10px_25px_-3px_rgba(47,71,57,0.08)] transition-all duration-300 flex flex-col items-center gap-3.5 shadow-[0_2px_10px_rgba(47,71,57,0.03)] active:scale-95"
+    className="group bg-white dark:bg-[#1a241f] border border-[#e7e0d5] dark:border-[#2a3d33] p-8 rounded-3xl hover:border-[#2f4739] dark:hover:border-[#489a69] hover:shadow-[0_12px_30px_rgba(47,71,57,0.12)] transition-all duration-300 flex flex-col items-center gap-4 shadow-card active:scale-95 text-center"
   >
-    <div className="text-3xl p-3.5 bg-[#f7f4ee] rounded-full border border-[#ede4d5] group-hover:scale-110 transition-transform duration-300">
+    <div className="text-4xl p-4 bg-[#f7f4ee] dark:bg-[#223028] rounded-2xl border border-[#ede4d5] dark:border-[#2f4739] group-hover:scale-110 transition-transform duration-300">
       {icon}
     </div>
-    <span className="font-serif text-base font-semibold text-[#1c1917] group-hover:text-[#2f4739] transition-colors">
+    <span className="font-serif text-lg font-bold text-[#111827] dark:text-[#f4f0ea] group-hover:text-[#2f4739] dark:group-hover:text-[#489a69] transition-colors">
       {name}
     </span>
   </button>

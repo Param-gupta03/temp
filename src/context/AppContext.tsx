@@ -45,6 +45,22 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [showMessageModal, setShowMessageModal] = useState(false);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [localProducts, setLocalProducts] = useState<any[]>(() => mockProducts.map(normalizeProduct));
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => {
+      const nextTheme = prev === 'light' ? 'dark' : 'light';
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem('green-turtle-theme', nextTheme);
+        if (nextTheme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      }
+      return nextTheme;
+    });
+  }, []);
 
   useEffect(() => {
     const storedUser = readJson(LOCAL_USER_STORAGE_KEY, null);
@@ -65,6 +81,19 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setRole(storedUser?.role || null);
     setCart(readJson(CART_STORAGE_KEY, []));
     setLocalProducts(readJson(LOCAL_PRODUCTS_STORAGE_KEY, mockProducts).map(normalizeProduct));
+    
+    if (typeof window !== 'undefined') {
+      const storedTheme = window.localStorage.getItem('green-turtle-theme') as 'light' | 'dark' | null;
+      if (storedTheme) {
+        setTheme(storedTheme);
+        if (storedTheme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      }
+    }
+
     setHasLoadedStoredState(true);
   }, []);
 
@@ -766,6 +795,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       spendEcoCoins,
       creditSellerWallet,
       updateProductStock,
+      theme,
+      toggleTheme,
     }),
     [
       addSellerProduct,
@@ -796,6 +827,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       spendEcoCoins,
       creditSellerWallet,
       updateProductStock,
+      theme,
+      toggleTheme,
     ]
   );
 

@@ -77,7 +77,7 @@ export async function POST(request: Request) {
         // 2. Notify admin
         resend.emails.send({
           from: 'The Green Turtles <onboarding@resend.dev>',
-          to: 'dishasikka@thegreenturtles.in',
+          to: process.env.ADMIN_EMAIL || 'paramgupta0305@gmail.com',
           subject: `New Subscriber: ${safeEmail}`,
           html: `<p>New user subscribed to the newsletter: <strong>${safeEmail}</strong></p>`,
         })
@@ -100,7 +100,7 @@ export async function POST(request: Request) {
     try {
       const adminResult = await resend.emails.send({
         from: 'The Green Turtles <onboarding@resend.dev>',
-        to: 'dishasikka@thegreenturtles.in',
+        to: process.env.ADMIN_EMAIL || 'paramgupta0305@gmail.com',
         subject: `New ${safeType} from ${safeName}`,
         html: `<p><strong>Type:</strong> ${safeType}</p>
                <p><strong>Name:</strong> ${safeName}</p>

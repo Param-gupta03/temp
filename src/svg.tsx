@@ -8,11 +8,11 @@ interface SvgLogoProps {
 
 const SvgLogo = ({ width = "120", height = "120", className = "" }: SvgLogoProps) => {
     return (
-        <div className={`flex items-center justify-center ${className}`} style={{ width: width, height: height }}>
+        <div className={`flex items-center justify-center bg-transparent ${className}`} style={{ width: width, height: height }}>
             <img 
                 src="/logo.png" 
                 alt="The Green Turtles Logo" 
-                className="max-w-full max-h-full object-contain"
+                className="max-w-full max-h-full object-contain bg-transparent"
             />
         </div>
     );
